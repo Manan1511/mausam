@@ -159,6 +159,16 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* Hide scrollbar on the mobile season-tab strip while keeping it scrollable */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
