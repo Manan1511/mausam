@@ -15,6 +15,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   body {
@@ -22,6 +23,7 @@
     background: var(--color-cream);
     font-family: var(--font-sans);
     color: var(--color-ink);
+    overflow-x: clip;
   }
 
   * {

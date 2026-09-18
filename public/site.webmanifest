@@ -1,0 +1,22 @@
+{
+  "name": "Mausam Artwork | Atelier de Parfum & Floral Studio",
+  "short_name": "Mausam Artwork",
+  "description": "Artisanal handcrafted sculptural soy candles and bespoke everlasting floral bouquets.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf9f5",
+  "theme_color": "#1e1a17",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

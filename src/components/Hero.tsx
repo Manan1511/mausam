@@ -1,33 +1,40 @@
 export default function Hero() {
   return (
-    <div id="collections" className="grid grid-cols-1 md:grid-cols-2 min-h-[640px]">
-      <div className="flex flex-col justify-center gap-7 px-8 py-16 md:px-16 md:py-20 max-w-[640px]">
-        <div className="text-[11px] tracking-[0.2em] uppercase text-gold">Autumn / Winter Collection</div>
+    <div id="collections" className="scroll-mt-28 grid grid-cols-1 md:grid-cols-2 min-h-[540px] md:min-h-[calc(100vh-140px)] max-h-[820px]">
+      <div className="flex flex-col justify-center gap-6 md:gap-7 px-6 py-12 md:px-14 lg:px-20 md:py-16 max-w-[680px] mx-auto md:mx-0">
+        <div className="text-[11px] tracking-[0.2em] uppercase text-gold">Handcrafted Luxury Atelier</div>
         <h1 className="font-serif font-medium text-[38px] md:text-[56px] leading-[1.08] m-0">
-          Fragrance as an Art Form. Seasons in Scent.
+          Artisanal Candles &amp; Bespoke Bouquets.
         </h1>
         <p className="text-base leading-[1.7] text-ink font-light max-w-[460px]">
-          Hand-poured soy candles housed in sculptural, reusable vessels. Designed to illuminate your personal
-          sanctuary.
+          Sculptural hand-poured soy candles and everlasting floral arrangements, crafted in our atelier to elevate and
+          illuminate your personal sanctuary.
         </p>
-        <div className="flex flex-wrap gap-8 items-center mt-2">
+        <div className="flex flex-wrap gap-6 sm:gap-8 items-center mt-2">
           <a
-            href="#collections"
+            href="#offerings"
             className="btn-solid bg-ink text-cream px-8 py-4 text-xs tracking-[0.1em] uppercase"
           >
-            Explore The Collection
+            Explore The Creations
           </a>
           <a
             href="#gifting"
-            className="text-xs tracking-[0.1em] uppercase border-b border-gold pb-1.5 text-ink transition-colors duration-300"
+            className="text-xs tracking-[0.1em] uppercase border-b border-gold pb-1.5 text-ink transition-colors duration-300 hover:text-gold"
           >
-            Discover The Gifting Atelier
+            Discover Gifting Atelier
           </a>
         </div>
       </div>
-      <div className="diagonal-swatch relative flex items-center justify-center min-h-[320px]">
-        <div className="bg-cream/88 px-5 py-2.5 font-mono text-[11px] tracking-[0.08em] uppercase text-ink text-center">
-          Lifestyle photo — ribbed amber glass &amp; ceramic vessels on travertine
+      <div className="relative overflow-hidden min-h-[360px] md:min-h-full bg-beige">
+        <img
+          src="/images/products/hero-lifestyle.webp"
+          alt="Mausam Artwork Artisanal Candles and Bouquets Display"
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute bottom-6 left-6 bg-cream/90 backdrop-blur-xs px-4 py-2 text-[11px] tracking-[0.1em] uppercase font-serif text-ink">
+          Mausam Atelier Collection
         </div>
       </div>
     </div>

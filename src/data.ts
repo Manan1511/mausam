@@ -1,120 +1,311 @@
-export interface SeasonTab {
-  id: string
+export const DEFAULT_CURRENCY = '₹'
+
+export type ProductCategory = 'candles' | 'bouquets'
+
+export interface CategoryInfo {
+  id: ProductCategory
   name: string
+  tagline: string
+  subtitle: string
+  description: string
+  coverImage: string
+  badge: string
+  countLabel: string
 }
 
-export const seasonTabs: SeasonTab[] = [
-  { id: 'monsoon', name: 'The Monsoon — Earth & Petrichor' },
-  { id: 'hemant', name: 'Hemant — Smoked Pine & Amber' },
-  { id: 'vasant', name: 'Vasant — Wild Jasmine & Fig' },
-  { id: 'grishma', name: 'Grishma — Bergamot & Tea' },
+export const productCategories: CategoryInfo[] = [
+  {
+    id: 'candles',
+    name: 'Artisanal Candles',
+    tagline: 'Sculptural Wax Art & Scented Vessels',
+    subtitle: 'Hand-poured 100% soy & coconut wax creations',
+    description:
+      'From sculptural playing-card pillars and classical bust statues to botanical lotus and marigold urlis, each candle is individually hand-poured with toxin-free botanical wax and master perfumery oils.',
+    coverImage: '/images/products/category-candles-cover.webp',
+    badge: 'Atelier Signature',
+    countLabel: '8 Signature Designs',
+  },
+  {
+    id: 'bouquets',
+    name: 'Floral Bouquets',
+    tagline: 'Everlasting Blooms & Hat Box Curations',
+    subtitle: 'Bespoke preserved floral atelier arrangements',
+    description:
+      'Thoughtfully arranged everlasting garden roses, hydrangeas, and delicate botanicals presented in luxury Parisian hat boxes and handcrafted gift wraps for cherished milestones and heartfelt gestures.',
+    coverImage: '/images/products/category-bouquets-cover.webp',
+    badge: 'Bespoke Atelier',
+    countLabel: '8 Curated Arrangements',
+  },
 ]
 
-export interface SeasonProduct {
-  photoLabel: string
+export interface ProductItem {
+  id: string
   name: string
-  notes: string[]
-  burnTime: string
-  weight: string
+  category: ProductCategory
+  subtitle: string
+  description: string
+  price: string
+  image: string
+  badge?: string
+  specs: {
+    burnTime?: string
+    weight?: string
+    dimensions?: string
+    material?: string
+    scentNotes?: string
+  }
 }
 
-export const seasonProductsByTab: Record<string, SeasonProduct[]> = {
-  monsoon: [
+export const productsByCategory: Record<ProductCategory, ProductItem[]> = {
+  candles: [
     {
-      photoLabel: 'product photo — petrichor vessel',
-      name: 'Petrichor No. 1',
-      notes: ['Top: Rain-soaked Earth & Bergamot', 'Heart: Vetiver & Moss', 'Base: Sandalwood'],
-      burnTime: '60+ Hour Clean Burn',
-      weight: '220g',
+      id: 'candle-playing-card',
+      name: 'Playing Card Art Pillar',
+      category: 'candles',
+      subtitle: 'Hand-Carved Sculptural Wax Art',
+      description: 'Iconic playing card motifs sculpted with pure soy wax, creating a statement art piece for mantels and dressers.',
+      price: `${DEFAULT_CURRENCY}2,450`,
+      image: '/images/products/candle-playing-card.webp',
+      badge: 'Best Seller',
+      specs: {
+        burnTime: '50+ Hour Clean Burn',
+        weight: '320g',
+        material: '100% Eco-Soy Wax',
+        scentNotes: 'Amber Resin, Smoked Cedar & Vanilla Bean',
+      },
     },
     {
-      photoLabel: 'product photo — monsoon clay pot',
-      name: 'Monsoon Clay',
-      notes: ['Top: Wet Stone & Fig Leaf', 'Heart: Cedarwood', 'Base: Warm Musk'],
-      burnTime: '55+ Hour Clean Burn',
-      weight: '200g',
+      id: 'candle-lotus-urli',
+      name: 'Lotus Blossom Urli Candle',
+      category: 'candles',
+      subtitle: 'Scalloped Gold-Rim Botanical Urli',
+      description: 'Hand-set pink and white lotus petal wax formations in an ornate metallic rim vessel for festive illumination.',
+      price: `${DEFAULT_CURRENCY}3,200`,
+      image: '/images/products/candle-lotus-urli.webp',
+      badge: 'Festive Centerpiece',
+      specs: {
+        burnTime: '65+ Hour Clean Burn',
+        weight: '450g',
+        material: 'Soy & Coconut Wax Blend',
+        scentNotes: 'Jasmine Sambac, White Rose & Vetiver',
+      },
     },
     {
-      photoLabel: 'product photo — earth & ember bowl',
-      name: 'Earth & Ember',
-      notes: ['Top: Black Pepper', 'Heart: Terracotta Accord', 'Base: Oud'],
-      burnTime: '65+ Hour Clean Burn',
-      weight: '240g',
+      id: 'candle-sculpture-bust',
+      name: 'Venus Aphrodite Bust Candle',
+      category: 'candles',
+      subtitle: 'Classical Sculpture Figurative Candle',
+      description: 'Museum-grade neoclassical statue cast in fine velvety soy wax, designed as sculptural home decor and gentle ambient light.',
+      price: `${DEFAULT_CURRENCY}1,850`,
+      image: '/images/products/candle-sculpture-bust.webp',
+      badge: 'Collector Edition',
+      specs: {
+        burnTime: '35+ Hour Clean Burn',
+        weight: '260g',
+        material: 'Pure Botanical Soy',
+        scentNotes: 'French Lavender, Bergamot & Soft Sandalwood',
+      },
+    },
+    {
+      id: 'candle-burgundy-tapers',
+      name: 'Burgundy Botanique Tapers (Set of 4)',
+      category: 'candles',
+      subtitle: 'Artisanal Cone-Wrapped Dinner Tapers',
+      description: 'Rich burgundy dripless tapers bundled with dried botanical sprigs and parchment sleeves for dinner tables.',
+      price: `${DEFAULT_CURRENCY}1,650`,
+      image: '/images/products/candle-burgundy-tapers.webp',
+      specs: {
+        burnTime: '12+ Hours Each',
+        weight: '200g (Set)',
+        material: 'Beeswax & Soy Blend',
+        scentNotes: 'Subtle Honeyed Fig Leaf (Dripless)',
+      },
+    },
+    {
+      id: 'candle-patisserie-waffle',
+      name: 'Pâtisserie Berry & Waffle Candle',
+      category: 'candles',
+      subtitle: 'Gourmand Wax Confection Sculpture',
+      description: 'Artfully hand-piped miniature dessert candles topped with realistic wax berries, biscuits, and creamy glaze.',
+      price: `${DEFAULT_CURRENCY}1,950`,
+      image: '/images/products/candle-patisserie-waffle.webp',
+      badge: 'Gourmand Series',
+      specs: {
+        burnTime: '40+ Hour Clean Burn',
+        weight: '210g',
+        material: 'Soy Wax & Gourmet Oils',
+        scentNotes: 'Warm Tonka, Baked Vanilla & Wild Strawberry',
+      },
+    },
+    {
+      id: 'candle-marigold-urli',
+      name: 'Marigold Celebration Urli Vessel',
+      category: 'candles',
+      subtitle: 'Golden Petal Floral Urli Vessel',
+      description: 'Bright golden and orange marigold floral carvings floating in premium scented soy wax with multi-wick illumination.',
+      price: `${DEFAULT_CURRENCY}2,800`,
+      image: '/images/products/candle-marigold-urli.webp',
+      specs: {
+        burnTime: '55+ Hour Clean Burn',
+        weight: '400g',
+        material: '100% Eco-Soy Wax',
+        scentNotes: 'Fresh Marigold, Saffron & Kashmiri Oud',
+      },
+    },
+    {
+      id: 'candle-floating-petal',
+      name: 'Celestial Floating Bloom Vessel',
+      category: 'candles',
+      subtitle: 'Cobalt & Gilded Petal Glass Bowl',
+      description: 'Deep blue and gold-dusted wax flowers floating gracefully in an artisanal glass chalice designed to reflect candlelight.',
+      price: `${DEFAULT_CURRENCY}2,200`,
+      image: '/images/products/candle-floating-petal.webp',
+      specs: {
+        burnTime: '45+ Hour Clean Burn',
+        weight: '280g',
+        material: 'Soy Wax & Blown Glass',
+        scentNotes: 'Blue Lotus, Green Tea & White Musk',
+      },
+    },
+    {
+      id: 'candle-curated-box',
+      name: 'Atelier Scented Gift Box',
+      category: 'candles',
+      subtitle: 'Dual Botanical Urli Keepsake Gift Set',
+      description: 'Handcrafted twin candle set presented in signature rigid gift box with satin ties and custom embossed card.',
+      price: `${DEFAULT_CURRENCY}3,600`,
+      image: '/images/products/candle-curated-box.webp',
+      badge: 'Gift Atelier',
+      specs: {
+        burnTime: '80+ Total Hour Burn',
+        weight: '500g',
+        material: 'Pure Soy & Gold Foil',
+        scentNotes: 'Petrichor, Jasmine & Smoked Amber',
+      },
     },
   ],
-  hemant: [
+  bouquets: [
     {
-      photoLabel: 'product photo — smoked amber urn',
-      name: 'Smoked Amber Urn',
-      notes: ['Top: Smoked Pine', 'Heart: Amber Resin', 'Base: Cedar'],
-      burnTime: '58+ Hour Clean Burn',
-      weight: '230g',
+      id: 'bouquet-blush-hatbox',
+      name: 'Blush Rose Atelier Hat Box',
+      category: 'bouquets',
+      subtitle: 'Signature Round Keepsake Bloom Box',
+      description: 'Everlasting blush pink garden roses, hydrangeas, and eucalyptus nested in a handcrafted white Parisian hat box.',
+      price: `${DEFAULT_CURRENCY}3,400`,
+      image: '/images/products/bouquet-blush-hatbox.webp',
+      badge: 'Most Loved',
+      specs: {
+        dimensions: '22cm x 25cm Hat Box',
+        material: 'Preserved & Everlasting Florals',
+        scentNotes: 'Infused with Subtle Bulgarian Rose Water',
+      },
     },
     {
-      photoLabel: 'product photo — hearth pine bowl',
-      name: 'Hearth Pine Bowl',
-      notes: ['Top: Frankincense', 'Heart: Dry Pine Needle', 'Base: Sandalwood'],
-      burnTime: '52+ Hour Clean Burn',
-      weight: '210g',
+      id: 'bouquet-vintage-pastels',
+      name: 'Vintage Peony & Lilac Bloom Box',
+      category: 'bouquets',
+      subtitle: 'Artisanal Pastel Floral Arrangement',
+      description: 'A romantic symphony of dusty mauve roses, lilac peonies, and pearl accents arranged in a velvet-finish cylinder box.',
+      price: `${DEFAULT_CURRENCY}3,800`,
+      image: '/images/products/bouquet-vintage-pastels.webp',
+      badge: 'Atelier Choice',
+      specs: {
+        dimensions: '24cm x 28cm Bloom Box',
+        material: 'Premium Preserved Garden Blooms',
+        scentNotes: 'Gentle French Peony & White Tea Essence',
+      },
     },
     {
-      photoLabel: 'product photo — ember spice vessel',
-      name: 'Ember Spice Vessel',
-      notes: ['Top: Clove & Cinnamon Bark', 'Heart: Amber', 'Base: Warm Musk'],
-      burnTime: '60+ Hour Clean Burn',
-      weight: '225g',
-    },
-  ],
-  vasant: [
-    {
-      photoLabel: 'product photo — wild jasmine bowl',
-      name: 'Wild Jasmine Bowl',
-      notes: ['Top: Jasmine Sambac', 'Heart: Fig Leaf', 'Base: White Musk'],
-      burnTime: '56+ Hour Clean Burn',
-      weight: '215g',
+      id: 'bouquet-spring-bloom',
+      name: 'Spring Meadow Petite Hat Box',
+      category: 'bouquets',
+      subtitle: 'Curated Cylindrical Bloom Box',
+      description: 'Sunny lemon, peach, and lavender everlasting blooms tied with French silk ribbon and the signature Mausam seal.',
+      price: `${DEFAULT_CURRENCY}3,250`,
+      image: '/images/products/bouquet-spring-bloom.webp',
+      specs: {
+        dimensions: '20cm x 22cm Petite Box',
+        material: 'Everlasting Preserved Botanicals',
+        scentNotes: 'Subtle Sweet Magnolia & Bergamot',
+      },
     },
     {
-      photoLabel: 'product photo — fig blossom urn',
-      name: 'Fig Blossom Urn',
-      notes: ['Top: Green Fig', 'Heart: Neroli', 'Base: Cedarwood'],
-      burnTime: '54+ Hour Clean Burn',
-      weight: '205g',
+      id: 'bouquet-celebration-tag',
+      name: 'Celebration Personalized Floral Box',
+      category: 'bouquets',
+      subtitle: 'Custom Initial & Polaroid Gift Box',
+      description: 'Handcrafted floral hamper with personalized mini polaroid, gold foil card, and curated everlasting flowers.',
+      price: `${DEFAULT_CURRENCY}4,100`,
+      image: '/images/products/bouquet-celebration-tag.webp',
+      badge: 'Personalized',
+      specs: {
+        dimensions: '26cm x 26cm Gift Hamper',
+        material: 'Preserved Roses & Keepsake Box',
+        scentNotes: 'Wild Jasmine & Fig Essence',
+      },
     },
     {
-      photoLabel: 'product photo — bloom garden vessel',
-      name: 'Bloom Garden Vessel',
-      notes: ['Top: Wild Jasmine', 'Heart: White Tea', 'Base: Sandalwood'],
-      burnTime: '58+ Hour Clean Burn',
-      weight: '220g',
-    },
-  ],
-  grishma: [
-    {
-      photoLabel: 'product photo — bergamot tea chalice',
-      name: 'Bergamot Tea Chalice',
-      notes: ['Top: Bergamot', 'Heart: Green Tea', 'Base: Bamboo'],
-      burnTime: '50+ Hour Clean Burn',
-      weight: '195g',
+      id: 'bouquet-keepsake-arrangement',
+      name: 'Botanical Keepsake Cup',
+      category: 'bouquets',
+      subtitle: 'Petite Ceramic Floral Accent',
+      description: 'Charming miniature dried and preserved floral arrangement set in a reusable fluted ceramic chalice for desks and vanities.',
+      price: `${DEFAULT_CURRENCY}2,200`,
+      image: '/images/products/bouquet-keepsake-arrangement.webp',
+      specs: {
+        dimensions: '15cm x 18cm Ceramic Chalice',
+        material: 'Ceramic Keepsake & Dried Florals',
+        scentNotes: 'Unscented / Natural Botanical Throw',
+      },
     },
     {
-      photoLabel: 'product photo — citrus grove bowl',
-      name: 'Citrus Grove Bowl',
-      notes: ['Top: Blood Orange', 'Heart: Bergamot', 'Base: White Musk'],
-      burnTime: '48+ Hour Clean Burn',
-      weight: '190g',
+      id: 'bouquet-english-roses',
+      name: 'English Rose & Hydrangea Cluster',
+      category: 'bouquets',
+      subtitle: 'Dense Romantic Garden Box',
+      description: 'Opulent layers of deep petal pink garden roses, white waxflowers, and delicate gypsophila nestled into a luxury gift display.',
+      price: `${DEFAULT_CURRENCY}3,600`,
+      image: '/images/products/bouquet-english-roses.webp',
+      specs: {
+        dimensions: '25cm x 25cm Square Hamper',
+        material: 'Preserved Florals & Keepsake Box',
+        scentNotes: 'English Damask Rose Infusion',
+      },
     },
     {
-      photoLabel: 'product photo — sunlit veranda vessel',
-      name: 'Sunlit Veranda Vessel',
-      notes: ['Top: Green Tea', 'Heart: Jasmine', 'Base: Cedarwood'],
-      burnTime: '52+ Hour Clean Burn',
-      weight: '200g',
+      id: 'bouquet-artisan-curation',
+      name: 'Artisan Pastel Hand-Tied Wrap',
+      category: 'bouquets',
+      subtitle: 'Crafted Florist Paper & Silk Wrap',
+      description: 'Lush hand-tied floral bouquet wrapped in layered Italian paper, tissue, and gold-edged satin ribbon.',
+      price: `${DEFAULT_CURRENCY}2,950`,
+      image: '/images/products/bouquet-artisan-curation.webp',
+      specs: {
+        dimensions: '35cm Height Wrapped Bouquet',
+        material: 'Preserved & Dried Floral Stem Wrap',
+        scentNotes: 'Fresh Botanical Scent Infusion',
+      },
+    },
+    {
+      id: 'bouquet-grand-tablebox',
+      name: 'Grand Foyer Statement Centerpiece',
+      category: 'bouquets',
+      subtitle: 'Luxury Table Display Floral Box',
+      description: 'Substantial multi-tier floral curation designed as an unforgettable dining centerpiece or grand entrance statement.',
+      price: `${DEFAULT_CURRENCY}5,200`,
+      image: '/images/products/bouquet-grand-tablebox.webp',
+      badge: 'Statement Piece',
+      specs: {
+        dimensions: '32cm x 35cm Grand Display Box',
+        material: 'Master Preserved Florals & Silk Ribbon',
+        scentNotes: 'Delicate Garden Rose & White Amber',
+      },
     },
   ],
 }
 
 export interface Bestseller {
-  photoLabel: string
+  image: string
   category: string
   name: string
   notes: string
@@ -122,14 +313,62 @@ export interface Bestseller {
 }
 
 export const bestsellers: Bestseller[] = [
-  { photoLabel: 'petrichor vessel', category: 'Earth & Petrichor', name: 'Petrichor Vessel', notes: 'Vetiver · Rain-soaked Earth · Sandalwood', price: '₹4,200' },
-  { photoLabel: 'smoked amber urn', category: 'Smoked Pine & Amber', name: 'Smoked Amber Urn', notes: 'Smoked Pine · Amber Resin · Cedar', price: '₹4,800' },
-  { photoLabel: 'wild jasmine bowl', category: 'Wild Jasmine & Fig', name: 'Wild Jasmine Bowl', notes: 'Jasmine Sambac · Fig Leaf · White Musk', price: '₹4,500' },
-  { photoLabel: 'bergamot tea chalice', category: 'Bergamot & Tea', name: 'Bergamot Tea Chalice', notes: 'Bergamot · Green Tea · Bamboo', price: '₹4,000' },
-  { photoLabel: 'ceramic dune candle', category: 'Sandalwood & Oud', name: 'Ceramic Dune Candle', notes: 'Oud · Sandalwood · Warm Musk', price: '₹5,200' },
-  { photoLabel: 'ribbed glass ember', category: 'Cardamom & Clove', name: 'Ribbed Glass Ember', notes: 'Cardamom · Clove · Tonka Bean', price: '₹4,600' },
-  { photoLabel: 'alabaster bloom vessel', category: 'Rose & Saffron', name: 'Alabaster Bloom Vessel', notes: 'Rose Absolute · Saffron · Amber', price: '₹4,900' },
-  { photoLabel: 'monsoon clay pot', category: 'Vetiver & Moss', name: 'Monsoon Clay Pot', notes: 'Vetiver · Moss · Cedarwood', price: '₹4,300' },
+  {
+    image: '/images/products/candle-playing-card.webp',
+    category: 'Artisanal Candles',
+    name: 'Playing Card Pillar',
+    notes: 'Pure Soy Wax · Sculpted Ace Motifs · Amber & Cedar',
+    price: `${DEFAULT_CURRENCY}2,450`,
+  },
+  {
+    image: '/images/products/bouquet-blush-hatbox.webp',
+    category: 'Floral Bouquets',
+    name: 'Blush Rose Atelier Box',
+    notes: 'Everlasting Preserved Roses · White Hat Box · Silk Ribbon',
+    price: `${DEFAULT_CURRENCY}3,400`,
+  },
+  {
+    image: '/images/products/candle-lotus-urli.webp',
+    category: 'Artisanal Candles',
+    name: 'Lotus Blossom Urli Candle',
+    notes: 'Scalloped Gold Vessel · Jasmine Sambac · Eco-Soy',
+    price: `${DEFAULT_CURRENCY}3,200`,
+  },
+  {
+    image: '/images/products/bouquet-vintage-pastels.webp',
+    category: 'Floral Bouquets',
+    name: 'Vintage Peony & Lilac Box',
+    notes: 'Dusty Rose & Lilac Botanicals · Velvet Cylinder Box',
+    price: `${DEFAULT_CURRENCY}3,800`,
+  },
+  {
+    image: '/images/products/candle-sculpture-bust.webp',
+    category: 'Artisanal Candles',
+    name: 'Venus Aphrodite Bust',
+    notes: 'Neoclassical Statue · Pure Botanical Soy · French Lavender',
+    price: `${DEFAULT_CURRENCY}1,850`,
+  },
+  {
+    image: '/images/products/candle-burgundy-tapers.webp',
+    category: 'Artisanal Candles',
+    name: 'Burgundy Botanique Tapers',
+    notes: 'Set of 4 · Dried Floral Cones · Dripless Beeswax',
+    price: `${DEFAULT_CURRENCY}1,650`,
+  },
+  {
+    image: '/images/products/bouquet-spring-bloom.webp',
+    category: 'Floral Bouquets',
+    name: 'Spring Meadow Hat Box',
+    notes: 'Preserved Pastel Florals · Signature Mausam Wax Seal',
+    price: `${DEFAULT_CURRENCY}3,250`,
+  },
+  {
+    image: '/images/products/candle-patisserie-waffle.webp',
+    category: 'Artisanal Candles',
+    name: 'Pâtisserie Berry Waffle',
+    notes: 'Hand-Piped Wax Dessert · Wild Berries · Vanilla Tonka',
+    price: `${DEFAULT_CURRENCY}1,950`,
+  },
 ]
 
 export interface GiftStep {
@@ -139,9 +378,9 @@ export interface GiftStep {
 }
 
 export const giftSteps: GiftStep[] = [
-  { number: '1', title: 'Curate Your Vessel', description: 'Select sizes & signature scents' },
-  { number: '2', title: 'Bespoke Details', description: 'Personalized wax seal, custom initial tag & foil-stamped gift card' },
-  { number: '3', title: 'Delivered to Delight', description: 'Hand-wrapped in signature gift packaging' },
+  { number: '1', title: 'Curate Your Creation', description: 'Choose your signature artisanal candles, preserved bouquets, or a bespoke combination' },
+  { number: '2', title: 'Bespoke Personalization', description: 'Personalized wax seal, custom initial tag & handwritten foil-stamped gift card' },
+  { number: '3', title: 'Delivered to Delight', description: 'Hand-wrapped in signature luxury keepsake packaging' },
 ]
 
 export interface CraftFeature {
@@ -151,14 +390,20 @@ export interface CraftFeature {
 }
 
 export const craftFeatures: CraftFeature[] = [
-  { shape: 'circle', title: '100% Eco-Soy & Coconut Wax', description: 'Toxin-free, sootless burn' },
-  { shape: 'diamond', title: 'Master Perfumery Oils', description: 'Complex, room-filling throw' },
-  { shape: 'square', title: 'Reusable Keepsake Vessels', description: 'Handcrafted ceramics & blown glass designed to live forever' },
+  { shape: 'circle', title: '100% Eco-Soy & Coconut Wax', description: 'Toxin-free, sootless burn with natural cotton & wooden wicks' },
+  { shape: 'diamond', title: 'Everlasting Botanical Artistry', description: 'Hand-preserved florals that maintain their velvety beauty for 1–2 years' },
+  { shape: 'square', title: 'Reusable Keepsake Vessels', description: 'Handcrafted ceramic pots, Parisian hat boxes & scalloped metal urlis made to last' },
 ]
 
-export const ambientMoments: string[] = [
-  'golden hour, bedside',
-  'dinner table styling',
-  'spa bath styling',
-  'reading nook, dusk',
+export interface EditorialMoment {
+  image: string
+  label: string
+  tag: string
+}
+
+export const ambientMoments: EditorialMoment[] = [
+  { image: '/images/products/editorial-bedside.webp', label: 'Golden Hour Bedside', tag: 'Sculptural Glow' },
+  { image: '/images/products/editorial-dinner.webp', label: 'Festive Dining Setting', tag: 'Urli & Taper Styling' },
+  { image: '/images/products/editorial-spa.webp', label: 'Sanctuary Spa Moment', tag: 'Botanical Lotus Petals' },
+  { image: '/images/products/editorial-nook.webp', label: 'Reading Nook Dusk', tag: 'Handcrafted Tapers' },
 ]

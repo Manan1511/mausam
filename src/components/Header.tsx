@@ -2,7 +2,8 @@ import { useState } from 'react'
 
 const navLinks = [
   { href: '#collections', label: 'The Collections' },
-  { href: '#shop-by-mausam', label: 'Shop by Mausam' },
+  { href: '#offerings', label: 'Candles & Bouquets' },
+  { href: '#bestsellers', label: 'Bestsellers' },
   { href: '#gifting', label: 'Gifting Atelier' },
   { href: '#story', label: 'Our Story' },
 ]
@@ -12,47 +13,49 @@ export default function Header() {
 
   return (
     <div className="sticky top-0 z-50 bg-cream border-b border-border">
-      <div className="flex items-center justify-between gap-4 px-5 py-2.5 md:px-8 border-b border-beige">
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          aria-expanded={open}
-          className="md:hidden flex flex-col justify-center gap-1.5 w-6 h-6 shrink-0 cursor-pointer"
-        >
-          <span
-            className={`block h-px w-full bg-ink transition-transform duration-300 ${
-              open ? 'translate-y-[6.5px] rotate-45' : ''
-            }`}
-          />
-          <span
-            className={`block h-px w-full bg-ink transition-opacity duration-300 ${
-              open ? 'opacity-0' : 'opacity-100'
-            }`}
-          />
-          <span
-            className={`block h-px w-full bg-ink transition-transform duration-300 ${
-              open ? '-translate-y-[6.5px] -rotate-45' : ''
-            }`}
-          />
-        </button>
+      <div className="border-b border-beige">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 px-5 py-2.5 md:px-8">
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            className="md:hidden flex flex-col justify-center gap-1.5 w-6 h-6 shrink-0 cursor-pointer"
+          >
+            <span
+              className={`block h-px w-full bg-ink transition-transform duration-300 ${
+                open ? 'translate-y-[6.5px] rotate-45' : ''
+              }`}
+            />
+            <span
+              className={`block h-px w-full bg-ink transition-opacity duration-300 ${
+                open ? 'opacity-0' : 'opacity-100'
+              }`}
+            />
+            <span
+              className={`block h-px w-full bg-ink transition-transform duration-300 ${
+                open ? '-translate-y-[6.5px] -rotate-45' : ''
+              }`}
+            />
+          </button>
 
-        <nav className="hidden md:flex flex-wrap gap-5 text-[10.5px] tracking-[0.06em] uppercase">
-          {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="link-underline">
-              {link.label}
-            </a>
-          ))}
-        </nav>
+          <nav className="hidden md:flex flex-wrap gap-6 text-[10.5px] tracking-[0.06em] uppercase">
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href} className="link-underline">
+                {link.label}
+              </a>
+            ))}
+          </nav>
 
-        <div className="hidden md:flex flex-wrap gap-4 items-center text-[10.5px] tracking-[0.06em] uppercase">
-          <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Search</span>
-          <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Wishlist</span>
-          <span>INR ₹</span>
-          <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Bag (0)</span>
+          <div className="hidden md:flex flex-wrap gap-5 items-center text-[10.5px] tracking-[0.06em] uppercase">
+            <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Search</span>
+            <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Wishlist</span>
+            <span>INR ₹</span>
+            <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Bag (0)</span>
+          </div>
+
+          <div className="md:hidden text-[10.5px] tracking-[0.06em] uppercase">Bag (0)</div>
         </div>
-
-        <div className="md:hidden text-[10.5px] tracking-[0.06em] uppercase">Bag (0)</div>
       </div>
 
       <div
@@ -74,9 +77,24 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="text-center px-5 py-3.5 md:px-8">
-        <div className="font-serif text-[22px] md:text-[26px] tracking-[0.14em] font-semibold">MAUSAM ARTWORK</div>
-        <div className="text-[9px] tracking-[0.2em] uppercase text-gold mt-0.5">Atelier de Parfum</div>
+      <div className="flex flex-col items-center justify-center px-5 py-2 md:py-2.5 text-center">
+        <a href="#collections" className="group inline-flex flex-col items-center cursor-pointer">
+          <img
+            src="/images/logo-icon.webp"
+            alt="Mausam Artwork Logo"
+            width="44"
+            height="44"
+            loading="lazy"
+            decoding="async"
+            className="w-9 h-9 md:w-10 md:h-10 object-contain mb-0.5 transition-transform duration-300 group-hover:scale-105"
+          />
+          <span className="font-serif text-[19px] md:text-[23px] tracking-[0.16em] font-semibold text-ink">
+            MAUSAM ARTWORK
+          </span>
+          <span className="text-[8.5px] md:text-[9px] tracking-[0.22em] uppercase text-gold">
+            Designer Scented Candles &amp; Floral Atelier
+          </span>
+        </a>
       </div>
     </div>
   )

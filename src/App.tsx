@@ -1,7 +1,7 @@
 import AnnouncementBar from './components/AnnouncementBar'
 import Header from './components/Header'
 import Hero from './components/Hero'
-import ShopByMausam from './components/ShopByMausam'
+import ProductOfferings from './components/ProductOfferings'
 import Bestsellers from './components/Bestsellers'
 import GiftingAtelier from './components/GiftingAtelier'
 import Craftsmanship from './components/Craftsmanship'
@@ -11,12 +11,12 @@ import Reveal from './components/Reveal'
 
 function App() {
   return (
-    <div className="bg-cream text-ink overflow-x-hidden">
+    <div className="bg-cream text-ink">
       <AnnouncementBar />
       <Header />
       <Hero />
       <Reveal>
-        <ShopByMausam />
+        <ProductOfferings />
       </Reveal>
       <Reveal>
         <Bestsellers />
@@ -30,9 +30,7 @@ function App() {
       <Reveal>
         <Editorial />
       </Reveal>
-      <Reveal>
-        <Footer />
-      </Reveal>
+      <Footer />
     </div>
   )
 }
