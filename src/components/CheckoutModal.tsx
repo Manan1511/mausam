@@ -51,8 +51,6 @@ export default function CheckoutModal() {
     }
   }, [isCheckoutOpen])
 
-  if (!isCheckoutOpen) return null
-
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -152,20 +150,29 @@ export default function CheckoutModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto"
+      className={`fixed inset-0 z-50 overflow-y-auto transition-[visibility] duration-300 ${
+        isCheckoutOpen ? 'visible pointer-events-auto' : 'invisible pointer-events-none'
+      }`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="checkout-modal-title"
+      aria-hidden={!isCheckoutOpen}
     >
       {/* Backdrop */}
       <div
         onClick={handleFinishAndClose}
-        className="fixed inset-0 bg-ink/60 backdrop-blur-[2px] transition-opacity duration-300"
+        className={`fixed inset-0 bg-ink/60 backdrop-blur-[3px] transition-opacity duration-300 ease-out ${
+          isCheckoutOpen ? 'opacity-100' : 'opacity-0'
+        }`}
         aria-hidden="true"
       />
 
       <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
-        <div className="relative w-full max-w-2xl bg-cream border border-border shadow-2xl overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200">
+        <div
+          className={`relative w-full max-w-2xl bg-cream border border-border shadow-2xl overflow-hidden my-8 transition-all duration-300 ease-out transform ${
+            isCheckoutOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          }`}
+        >
           {/* Header */}
           <div className="p-6 border-b border-border flex items-center justify-between bg-cream">
             <div>

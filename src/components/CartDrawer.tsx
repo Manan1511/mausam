@@ -38,24 +38,31 @@ export default function CartDrawer() {
     }
   }, [isCartOpen])
 
-  if (!isCartOpen) return null
-
   return (
     <div
-      className="fixed inset-0 z-50 overflow-hidden"
+      className={`fixed inset-0 z-50 overflow-hidden transition-[visibility] duration-300 ${
+        isCartOpen ? 'visible pointer-events-auto' : 'invisible pointer-events-none'
+      }`}
       role="dialog"
       aria-modal="true"
       aria-label="Shopping Cart Drawer"
+      aria-hidden={!isCartOpen}
     >
       {/* Backdrop */}
       <div
         onClick={closeCart}
-        className="fixed inset-0 bg-ink/60 backdrop-blur-[2px] transition-opacity duration-300"
+        className={`fixed inset-0 bg-ink/60 backdrop-blur-[3px] transition-opacity duration-300 ease-out ${
+          isCartOpen ? 'opacity-100' : 'opacity-0'
+        }`}
         aria-hidden="true"
       />
 
       <div className="fixed inset-y-0 right-0 flex max-w-full pl-6 sm:pl-10">
-        <div className="w-screen max-w-md bg-cream shadow-2xl flex flex-col justify-between border-l border-border animate-in slide-in-from-right duration-300">
+        <div
+          className={`w-screen max-w-md bg-cream shadow-2xl flex flex-col justify-between border-l border-border transition-transform duration-300 ease-out transform ${
+            isCartOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
           {/* Drawer Header */}
           <div className="p-5 sm:p-6 border-b border-border flex items-center justify-between bg-cream">
             <div className="flex items-center gap-2.5">

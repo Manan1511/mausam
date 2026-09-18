@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useCart } from '../context/cartContextDef'
 
 const navLinks = [
+  { href: '#shop', label: 'Shop' },
   { href: '#offerings', label: 'Collections' },
   { href: '#bestsellers', label: 'Bestsellers' },
   { href: '#story', label: 'Our Story' },
