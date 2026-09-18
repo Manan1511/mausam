@@ -162,7 +162,35 @@
     transform: translateY(0);
   }
 
-  /* Hide scrollbar on the mobile season-tab strip while keeping it scrollable */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes floatSlow {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .animate-float-slow {
+    animation: floatSlow 4s ease-in-out infinite;
+  }
+
+  /* Hide scrollbar on mobile while keeping it scrollable */
   .no-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;

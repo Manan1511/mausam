@@ -8,30 +8,37 @@ import Craftsmanship from './components/Craftsmanship'
 import Editorial from './components/Editorial'
 import Footer from './components/Footer'
 import Reveal from './components/Reveal'
+import { CartProvider } from './context/CartProvider'
+import CartDrawer from './components/CartDrawer'
+import CheckoutModal from './components/CheckoutModal'
 
 function App() {
   return (
-    <div className="bg-cream text-ink">
-      <AnnouncementBar />
-      <Header />
-      <Hero />
-      <Reveal>
-        <ProductOfferings />
-      </Reveal>
-      <Reveal>
-        <Bestsellers />
-      </Reveal>
-      <Reveal>
-        <GiftingAtelier />
-      </Reveal>
-      <Reveal>
-        <Craftsmanship />
-      </Reveal>
-      <Reveal>
-        <Editorial />
-      </Reveal>
-      <Footer />
-    </div>
+    <CartProvider>
+      <div className="bg-cream text-ink">
+        <AnnouncementBar />
+        <Header />
+        <Hero />
+        <Reveal>
+          <ProductOfferings />
+        </Reveal>
+        <Reveal>
+          <Bestsellers />
+        </Reveal>
+        <Reveal>
+          <GiftingAtelier />
+        </Reveal>
+        <Reveal>
+          <Craftsmanship />
+        </Reveal>
+        <Reveal>
+          <Editorial />
+        </Reveal>
+        <Footer />
+        <CartDrawer />
+        <CheckoutModal />
+      </div>
+    </CartProvider>
   )
 }
 

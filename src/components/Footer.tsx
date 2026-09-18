@@ -36,20 +36,19 @@ export default function Footer() {
             </div>
           </div>
           <div>
-            <div className="text-[11px] tracking-[0.15em] uppercase mb-4 md:mb-5 text-gold">Customer Concierge</div>
+            <div className="text-[11px] tracking-[0.15em] uppercase mb-4 md:mb-5 text-gold font-medium">Customer Care</div>
             <div className="flex flex-col gap-2.5 sm:gap-3 text-[13px] font-light">
-              <a href="#story">Candle Care Guide</a>
-              <a href="#story">Order Tracking</a>
-              <a href="#story">Shipping</a>
-              <a href="#story">FAQs</a>
+              <a href="#story" className="hover:text-gold transition-colors">Candle &amp; Floral Care Guide</a>
+              <a href="#offerings" className="hover:text-gold transition-colors">Pan-India Atelier Shipping</a>
+              <a href="#story" className="hover:text-gold transition-colors">Artisanal Studio FAQs</a>
             </div>
           </div>
           <div>
-            <div className="text-[11px] tracking-[0.15em] uppercase mb-4 md:mb-5 text-gold">Corporate Gifting</div>
+            <div className="text-[11px] tracking-[0.15em] uppercase mb-4 md:mb-5 text-gold font-medium">Bespoke &amp; Celebrations</div>
             <div className="flex flex-col gap-2.5 sm:gap-3 text-[13px] font-light">
-              <a href="#gifting">Bulk Orders</a>
-              <a href="#gifting">Custom Branding</a>
-              <a href="#story">Contact Concierge</a>
+              <a href="#gifting" className="hover:text-gold transition-colors">Wedding &amp; Event Favors</a>
+              <a href="#gifting" className="hover:text-gold transition-colors">Personalized Gift Boxes</a>
+              <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors">WhatsApp Studio Concierge</a>
             </div>
           </div>
         </div>

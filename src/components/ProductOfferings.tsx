@@ -5,6 +5,8 @@ import {
   type ProductCategory,
   type ProductItem,
 } from '../data'
+import { useCart } from '../context/cartContextDef'
+import { parsePriceToNumber } from '../utils/cartUtils'
 
 type ActiveFilter = 'all' | ProductCategory
 
@@ -20,6 +22,7 @@ const filterTabs: { id: ActiveFilter; label: string }[] = [
 
 export default function ProductOfferings() {
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(FILTER_ALL)
+  const { addItem } = useCart()
 
   const candleItems = productsByCategory.candles
   const bouquetItems = productsByCategory.bouquets
@@ -30,31 +33,30 @@ export default function ProductOfferings() {
       : productsByCategory[activeFilter]
 
   return (
-    <section id="offerings" className="scroll-mt-28 py-14 md:py-20 px-6 md:px-12 max-w-7xl mx-auto">
+    <section id="offerings" className="scroll-mt-28 py-14 md:py-20 px-4 sm:px-6 md:px-12 max-w-7xl mx-auto">
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12 md:mb-14">
-        <div className="text-[11px] tracking-[0.2em] uppercase text-gold mb-2">The Two Pillars</div>
-        <h2 className="font-serif font-medium text-3xl md:text-4xl lg:text-[42px] m-0 mb-4">
+      <div className="text-center max-w-3xl mx-auto mb-10 md:mb-14">
+        <div className="text-[11px] tracking-[0.22em] uppercase text-gold font-medium mb-2">Our Studio Offerings</div>
+        <h2 className="font-serif font-medium text-3xl md:text-4xl lg:text-[42px] m-0 mb-4 text-ink">
           Artisanal Candles &amp; Bespoke Bouquets
         </h2>
-        <p className="text-muted text-sm md:text-base font-light leading-[1.7] m-0">
-          Mausam Artwork exists at the intersection of olfactory craft and botanical design. Each piece is individually
-          handcrafted in our atelier — from sculpted soy candles to everlasting floral keepsakes.
+        <p className="text-muted text-sm md:text-base font-light leading-[1.75] m-0 max-w-2xl mx-auto">
+          Mausam Artwork exists at the intersection of natural olfactory craft and bespoke botanical design. Each piece is individually handcrafted in small atelier batches — from sculptural botanical candles to everlasting floral keepsakes.
         </p>
       </div>
 
       {/* Dual Category Spotlight Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-14 md:mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12 md:mb-16">
         {productCategories.map((cat) => {
           const isSelected = activeFilter === cat.id
           return (
             <div
               key={cat.id}
               onClick={() => setActiveFilter(cat.id)}
-              className={`group relative border transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between ${
+              className={`group relative border transition-all duration-500 cursor-pointer overflow-hidden flex flex-col justify-between hover-lift ${
                 isSelected
                   ? 'border-ink bg-beige/50 shadow-md ring-1 ring-ink'
-                  : 'border-border bg-cream hover:border-gold hover:shadow-lg'
+                  : 'border-border bg-cream hover:border-gold hover:shadow-xl'
               }`}
             >
               <div className="relative aspect-16/10 overflow-hidden bg-beige">
@@ -160,11 +162,26 @@ export default function ProductOfferings() {
                 )}
               </div>
 
-              <div className="pt-3 border-t border-border flex items-center justify-between text-sm">
-                <span className="font-medium text-ink">{product.price}</span>
-                <span className="text-[10px] tracking-[0.1em] uppercase text-gold hover:text-ink transition-colors cursor-pointer">
-                  Inquire
-                </span>
+              <div className="pt-3 border-t border-border flex items-center justify-between text-sm gap-2">
+                <span className="font-medium text-ink shrink-0">{product.price}</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    addItem({
+                      id: product.id,
+                      name: product.name,
+                      category: product.category,
+                      price: parsePriceToNumber(product.price),
+                      priceFormatted: product.price,
+                      image: product.image,
+                      subtitle: product.specs.scentNotes || product.subtitle,
+                    })
+                  }
+                  className="text-[10px] tracking-[0.12em] uppercase font-medium bg-beige hover:bg-ink text-ink hover:text-cream px-3 py-1.5 transition-colors duration-300 border border-border cursor-pointer shrink-0"
+                  aria-label={`Add ${product.name} to bag`}
+                >
+                  Add to Bag
+                </button>
               </div>
             </div>
           </div>

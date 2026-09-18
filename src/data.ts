@@ -18,9 +18,9 @@ export const productCategories: CategoryInfo[] = [
     id: 'candles',
     name: 'Artisanal Candles',
     tagline: 'Sculptural Wax Art & Scented Vessels',
-    subtitle: 'Hand-poured 100% soy & coconut wax creations',
+    subtitle: 'Hand-poured 100% soy & botanical wax creations',
     description:
-      'From sculptural playing-card pillars and classical bust statues to botanical lotus and marigold urlis, each candle is individually hand-poured with toxin-free botanical wax and master perfumery oils.',
+      'Individually hand-poured in small atelier batches using clean-burning botanical soy wax and fine perfumery oils. From sculptural playing cards and classical bust statues to botanical lotus urlis and dessert candles, each piece is designed to illuminate your space.',
     coverImage: '/images/products/category-candles-cover.webp',
     badge: 'Atelier Signature',
     countLabel: '8 Signature Designs',
@@ -28,10 +28,10 @@ export const productCategories: CategoryInfo[] = [
   {
     id: 'bouquets',
     name: 'Floral Bouquets',
-    tagline: 'Everlasting Blooms & Hat Box Curations',
-    subtitle: 'Bespoke preserved floral atelier arrangements',
+    tagline: 'Everlasting Preserved Blooms & Hat Box Keepsakes',
+    subtitle: 'Hand-arranged preserved floral keepsakes',
     description:
-      'Thoughtfully arranged everlasting garden roses, hydrangeas, and delicate botanicals presented in luxury Parisian hat boxes and handcrafted gift wraps for cherished milestones and heartfelt gestures.',
+      'Masterfully preserved garden roses, hydrangeas, and delicate botanicals that maintain their soft petals and vibrant beauty for seasons without water. Beautifully styled in luxury Parisian hat boxes with silk ribbons, custom wax seals, and personalized gift tags.',
     coverImage: '/images/products/category-bouquets-cover.webp',
     badge: 'Bespoke Atelier',
     countLabel: '8 Curated Arrangements',
@@ -305,8 +305,10 @@ export const productsByCategory: Record<ProductCategory, ProductItem[]> = {
 }
 
 export interface Bestseller {
+  id: string
   image: string
-  category: string
+  category: ProductCategory
+  categoryLabel: string
   name: string
   notes: string
   price: string
@@ -314,57 +316,73 @@ export interface Bestseller {
 
 export const bestsellers: Bestseller[] = [
   {
+    id: 'bs-playing-card',
     image: '/images/products/candle-playing-card.webp',
-    category: 'Artisanal Candles',
+    category: 'candles',
+    categoryLabel: 'Artisanal Candles',
     name: 'Playing Card Pillar',
     notes: 'Pure Soy Wax · Sculpted Ace Motifs · Amber & Cedar',
     price: `${DEFAULT_CURRENCY}2,450`,
   },
   {
+    id: 'bs-blush-hatbox',
     image: '/images/products/bouquet-blush-hatbox.webp',
-    category: 'Floral Bouquets',
+    category: 'bouquets',
+    categoryLabel: 'Floral Bouquets',
     name: 'Blush Rose Atelier Box',
     notes: 'Everlasting Preserved Roses · White Hat Box · Silk Ribbon',
     price: `${DEFAULT_CURRENCY}3,400`,
   },
   {
+    id: 'bs-lotus-urli',
     image: '/images/products/candle-lotus-urli.webp',
-    category: 'Artisanal Candles',
+    category: 'candles',
+    categoryLabel: 'Artisanal Candles',
     name: 'Lotus Blossom Urli Candle',
     notes: 'Scalloped Gold Vessel · Jasmine Sambac · Eco-Soy',
     price: `${DEFAULT_CURRENCY}3,200`,
   },
   {
+    id: 'bs-vintage-pastels',
     image: '/images/products/bouquet-vintage-pastels.webp',
-    category: 'Floral Bouquets',
+    category: 'bouquets',
+    categoryLabel: 'Floral Bouquets',
     name: 'Vintage Peony & Lilac Box',
     notes: 'Dusty Rose & Lilac Botanicals · Velvet Cylinder Box',
     price: `${DEFAULT_CURRENCY}3,800`,
   },
   {
+    id: 'bs-sculpture-bust',
     image: '/images/products/candle-sculpture-bust.webp',
-    category: 'Artisanal Candles',
+    category: 'candles',
+    categoryLabel: 'Artisanal Candles',
     name: 'Venus Aphrodite Bust',
     notes: 'Neoclassical Statue · Pure Botanical Soy · French Lavender',
     price: `${DEFAULT_CURRENCY}1,850`,
   },
   {
+    id: 'bs-burgundy-tapers',
     image: '/images/products/candle-burgundy-tapers.webp',
-    category: 'Artisanal Candles',
+    category: 'candles',
+    categoryLabel: 'Artisanal Candles',
     name: 'Burgundy Botanique Tapers',
     notes: 'Set of 4 · Dried Floral Cones · Dripless Beeswax',
     price: `${DEFAULT_CURRENCY}1,650`,
   },
   {
+    id: 'bs-spring-bloom',
     image: '/images/products/bouquet-spring-bloom.webp',
-    category: 'Floral Bouquets',
+    category: 'bouquets',
+    categoryLabel: 'Floral Bouquets',
     name: 'Spring Meadow Hat Box',
     notes: 'Preserved Pastel Florals · Signature Mausam Wax Seal',
     price: `${DEFAULT_CURRENCY}3,250`,
   },
   {
+    id: 'bs-patisserie-waffle',
     image: '/images/products/candle-patisserie-waffle.webp',
-    category: 'Artisanal Candles',
+    category: 'candles',
+    categoryLabel: 'Artisanal Candles',
     name: 'Pâtisserie Berry Waffle',
     notes: 'Hand-Piped Wax Dessert · Wild Berries · Vanilla Tonka',
     price: `${DEFAULT_CURRENCY}1,950`,
@@ -378,9 +396,21 @@ export interface GiftStep {
 }
 
 export const giftSteps: GiftStep[] = [
-  { number: '1', title: 'Curate Your Creation', description: 'Choose your signature artisanal candles, preserved bouquets, or a bespoke combination' },
-  { number: '2', title: 'Bespoke Personalization', description: 'Personalized wax seal, custom initial tag & handwritten foil-stamped gift card' },
-  { number: '3', title: 'Delivered to Delight', description: 'Hand-wrapped in signature luxury keepsake packaging' },
+  {
+    number: '1',
+    title: 'Select Atelier Creations',
+    description: 'Choose your signature hand-poured soy candles, everlasting flower hat boxes, or a bespoke combination.',
+  },
+  {
+    number: '2',
+    title: 'Custom Personalization',
+    description: 'Add a heartfelt handwritten message, custom photo/name tag, and authentic Mausam wax-sealed envelope.',
+  },
+  {
+    number: '3',
+    title: 'Delivered with Care',
+    description: 'Carefully wrapped in keepsake packaging and dispatched safely to doorsteps across India.',
+  },
 ]
 
 export interface CraftFeature {
@@ -390,9 +420,21 @@ export interface CraftFeature {
 }
 
 export const craftFeatures: CraftFeature[] = [
-  { shape: 'circle', title: '100% Eco-Soy & Coconut Wax', description: 'Toxin-free, sootless burn with natural cotton & wooden wicks' },
-  { shape: 'diamond', title: 'Everlasting Botanical Artistry', description: 'Hand-preserved florals that maintain their velvety beauty for 1–2 years' },
-  { shape: 'square', title: 'Reusable Keepsake Vessels', description: 'Handcrafted ceramic pots, Parisian hat boxes & scalloped metal urlis made to last' },
+  {
+    shape: 'circle',
+    title: 'Clean-Burning Botanical Wax',
+    description: '100% pure soy and botanical wax blends with lead-free cotton wicks for a sootless, toxin-free scent throw.',
+  },
+  {
+    shape: 'diamond',
+    title: 'Everlasting Botanical Artistry',
+    description: 'Artisan preserved florals and petals that retain their delicate texture and beauty for months without watering.',
+  },
+  {
+    shape: 'square',
+    title: 'Handcrafted Keepsake Vessels',
+    description: 'Brass lotus urlis, Parisian hat boxes, textured cylinders, and glass vessels designed to be treasured.',
+  },
 ]
 
 export interface EditorialMoment {

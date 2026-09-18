@@ -1,15 +1,15 @@
 import { useState } from 'react'
+import { useCart } from '../context/cartContextDef'
 
 const navLinks = [
-  { href: '#collections', label: 'The Collections' },
-  { href: '#offerings', label: 'Candles & Bouquets' },
+  { href: '#offerings', label: 'Collections' },
   { href: '#bestsellers', label: 'Bestsellers' },
-  { href: '#gifting', label: 'Gifting Atelier' },
   { href: '#story', label: 'Our Story' },
 ]
 
 export default function Header() {
   const [open, setOpen] = useState(false)
+  const { totalItems, openCart } = useCart()
 
   return (
     <div className="sticky top-0 z-50 bg-cream border-b border-border">
@@ -39,41 +39,67 @@ export default function Header() {
             />
           </button>
 
-          <nav className="hidden md:flex flex-wrap gap-6 text-[10.5px] tracking-[0.06em] uppercase">
+          <nav className="hidden md:flex flex-wrap gap-8 text-[11px] tracking-[0.08em] uppercase">
             {navLinks.map((link) => (
-              <a key={link.href} href={link.href} className="link-underline">
+              <a key={link.href} href={link.href} className="link-underline font-medium hover:text-gold transition-colors duration-300">
                 {link.label}
               </a>
             ))}
           </nav>
 
-          <div className="hidden md:flex flex-wrap gap-5 items-center text-[10.5px] tracking-[0.06em] uppercase">
-            <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Search</span>
-            <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Wishlist</span>
-            <span>INR ₹</span>
-            <span className="cursor-pointer transition-colors duration-300 hover:text-gold">Bag (0)</span>
+          <div className="hidden md:flex flex-wrap gap-6 items-center text-[11px] tracking-[0.08em] uppercase">
+            <span className="text-muted">INR ₹</span>
+            <button
+              type="button"
+              onClick={openCart}
+              className="cursor-pointer transition-colors duration-300 hover:text-gold flex items-center gap-1.5 font-medium bg-transparent border-none text-[11px] tracking-[0.08em] uppercase text-ink"
+              aria-label={`Open shopping bag with ${totalItems} items`}
+            >
+              <span>Bag</span>
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-ink text-cream text-[10px] font-sans font-medium transition-transform duration-300 group-hover:scale-110">
+                {totalItems}
+              </span>
+            </button>
           </div>
 
-          <div className="md:hidden text-[10.5px] tracking-[0.06em] uppercase">Bag (0)</div>
+          <button
+            type="button"
+            onClick={openCart}
+            className="md:hidden text-xs tracking-[0.08em] uppercase font-medium bg-transparent border-none text-ink cursor-pointer flex items-center gap-1.5"
+            aria-label={`Open shopping bag with ${totalItems} items`}
+          >
+            <span>Bag</span>
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-ink text-cream text-[10px] font-sans font-medium">
+              {totalItems}
+            </span>
+          </button>
         </div>
       </div>
 
       <div
         className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out border-b border-beige ${
-          open ? 'max-h-96' : 'max-h-0'
+          open ? 'max-h-80' : 'max-h-0'
         }`}
       >
-        <nav className="flex flex-col gap-4 px-5 py-5 text-xs tracking-[0.06em] uppercase">
+        <nav className="flex flex-col gap-4 px-6 py-5 text-xs tracking-[0.08em] uppercase">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} onClick={() => setOpen(false)}>
+            <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="hover:text-gold transition-colors">
               {link.label}
             </a>
           ))}
         </nav>
-        <div className="flex flex-wrap gap-4 px-5 pb-5 text-xs tracking-[0.06em] uppercase">
-          <span>Search</span>
-          <span>Wishlist</span>
-          <span>INR ₹</span>
+        <div className="flex flex-wrap gap-6 px-6 pb-5 text-xs tracking-[0.08em] uppercase items-center border-t border-beige/60 pt-4">
+          <span className="text-muted">INR ₹</span>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false)
+              openCart()
+            }}
+            className="text-gold font-medium uppercase bg-transparent border-none text-xs tracking-[0.08em] cursor-pointer"
+          >
+            View Bag ({totalItems})
+          </button>
         </div>
       </div>
 
