@@ -1,8 +1,11 @@
 export default function Hero() {
   return (
-    <div id="collections" className="relative scroll-mt-28 grid grid-cols-1 md:grid-cols-2 min-h-[520px] md:min-h-[calc(100vh-130px)] max-h-[820px] overflow-hidden">
-      {/* Hero Left: Text Column with Bouquet Backdrop */}
-      <div className="relative flex flex-col justify-center px-6 py-12 md:px-14 lg:px-20 md:py-16 max-w-[680px] mx-auto md:mx-0 overflow-hidden">
+    <div
+      id="collections"
+      className="relative scroll-mt-28 grid grid-cols-1 md:grid-cols-2 min-h-0 md:min-h-[calc(100vh-130px)] md:max-h-[840px] overflow-hidden"
+    >
+      {/* Hero Left: Text Column with Full-Bleed Bouquet Backdrop */}
+      <div className="relative w-full h-full flex flex-col justify-center px-6 py-12 sm:px-8 sm:py-14 md:px-12 lg:px-16 md:py-16 overflow-hidden">
         {/* Bouquet Backdrop Image & Gradient Scrim */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
           <img
@@ -12,16 +15,17 @@ export default function Hero() {
             decoding="async"
             className="w-full h-full object-cover object-center scale-105 opacity-45 md:opacity-40 transition-transform duration-1000 ease-out"
           />
-          {/* Dual-layered editorial scrim ensuring WCAG AA contrast for text and buttons */}
-          <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-cream/85 via-cream/78 to-cream/65" />
+          {/* Dual-layered editorial scrim: smooth vertical on mobile, horizontal on desktop */}
+          <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-cream/90 via-cream/80 to-cream/70 md:to-transparent" />
+          <div className="absolute inset-0 bg-cream/20 md:bg-transparent backdrop-blur-[0.3px]" />
         </div>
 
         {/* Content Container */}
-        <div className="relative z-10 flex flex-col gap-5 sm:gap-6 md:gap-7 animate-fade-in-up">
+        <div className="relative z-10 flex flex-col gap-5 sm:gap-6 md:gap-7 max-w-[540px] mx-auto md:mx-0 w-full animate-fade-in-up">
           <div className="text-[11px] tracking-[0.22em] uppercase text-gold font-medium">
             Handcrafted Scent &amp; Floral Atelier
           </div>
-          <h1 className="font-serif font-medium text-[36px] sm:text-[44px] md:text-[56px] leading-[1.08] m-0 text-ink">
+          <h1 className="font-serif font-medium text-[34px] sm:text-[42px] md:text-[52px] lg:text-[56px] leading-[1.08] m-0 text-ink">
             Artisanal Candles &amp; Bespoke Bouquets.
           </h1>
           <p className="text-sm sm:text-base leading-[1.75] text-ink/85 font-light max-w-[460px] m-0">
@@ -45,13 +49,13 @@ export default function Hero() {
       </div>
 
       {/* Hero Right: Artisanal Candles Visual */}
-      <div className="relative overflow-hidden min-h-[340px] md:min-h-full bg-beige group">
+      <div className="relative overflow-hidden w-full h-[360px] sm:h-[440px] md:h-full min-h-[320px] md:min-h-full bg-beige group">
         <img
           src="/images/products/hero-lifestyle.webp"
           alt="Mausam Artwork Artisanal Candles and Bouquets Display"
-          loading="lazy"
+          loading="eager"
           decoding="async"
-          className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover object-center transition-transform duration-1000 ease-out group-hover:scale-105"
         />
         <div className="absolute bottom-6 left-6 bg-cream/92 backdrop-blur-sm px-4 py-2 text-[11px] tracking-[0.12em] uppercase font-serif text-ink border border-border shadow-xs animate-float-slow">
           Mausam Atelier Collection
