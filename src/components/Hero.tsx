@@ -15,8 +15,9 @@ export default function Hero() {
             decoding="async"
             className="w-full h-full object-cover object-bottom opacity-95 transition-transform duration-1000 ease-out"
           />
-          {/* Responsive editorial scrim: velvety cream gradient on mobile for pristine legibility, ultra-clear on desktop */}
-          <div className="absolute inset-0 bg-gradient-to-b from-cream/95 via-cream/85 to-cream/25 md:from-cream/25 md:via-transparent md:to-transparent" />
+          {/* Soft editorial blur and cream gradient for crystal-clear text readability on all devices */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/95 via-cream/85 to-cream/25" />
+          <div className="absolute inset-0 backdrop-blur-[1.5px]" />
         </div>
 
         {/* Content Container */}
