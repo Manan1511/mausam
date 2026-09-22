@@ -6,18 +6,17 @@ export default function Hero() {
     >
       {/* Hero Left: Text Column with Full-Bleed Bouquet Backdrop */}
       <div className="relative w-full h-full flex flex-col justify-center px-6 py-12 sm:px-8 sm:py-14 md:px-12 lg:px-16 md:py-16 overflow-hidden">
-        {/* Bouquet Backdrop Image & Gradient Scrim */}
+        {/* Bouquet Backdrop Image & Editorial Scrim */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
           <img
             src="/images/hero-bouquet-backdrop.webp"
             alt=""
             loading="eager"
             decoding="async"
-            className="w-full h-full object-cover object-center scale-105 opacity-45 md:opacity-40 transition-transform duration-1000 ease-out"
+            className="w-full h-full object-cover object-bottom opacity-95 transition-transform duration-1000 ease-out"
           />
-          {/* Dual-layered editorial scrim: smooth vertical on mobile, horizontal on desktop */}
-          <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-cream/90 via-cream/80 to-cream/70 md:to-transparent" />
-          <div className="absolute inset-0 bg-cream/20 md:bg-transparent backdrop-blur-[0.3px]" />
+          {/* Responsive editorial scrim: velvety cream gradient on mobile for pristine legibility, ultra-clear on desktop */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/95 via-cream/85 to-cream/25 md:from-cream/25 md:via-transparent md:to-transparent" />
         </div>
 
         {/* Content Container */}
