@@ -17,6 +17,7 @@
 - Admin edits only fixed storefront content/media and ordered featured-product references.
 - Shopify Admin tokens, OAuth secrets, and private Storefront credentials remain server-side; use `Netlify.env.get()` in functions.
 - Missing store/app/allowlist configuration defaults safely to preview; preview cannot submit an order.
+- Pin Shopify GraphQL API requests to `2026-10`; use a compatible Node runtime for Netlify tooling.
 - Live checkout uses Shopify Storefront Cart API `checkoutUrl`; no custom payment/order simulation.
 - Admin authorization requires Shopify-verified email plus a server-only allowlist; absent/empty allowlist denies access.
 - Public metaobject access is read-only. Never expose a generic Admin GraphQL proxy.
@@ -58,6 +59,8 @@ These inputs need explicit verification because no Shopify store exists for end-
 - Create: `src/types/shopify.ts`
 - Create: `src/services/storefrontApi.ts`
 - Modify: `package.json`, lockfile, `netlify.toml`
+- Modify: `tsconfig.json`
+- Create: `tsconfig.netlify.json`
 - Create: `.env.example`
 
 **Interfaces:**
@@ -66,13 +69,15 @@ These inputs need explicit verification because no Shopify store exists for end-
 - `shopifyStorefrontGraphql<T>(query: string, variables?: Record<string, unknown>, buyerIp?: string): Promise<T>` sends private Storefront requests and forwards buyer IP when provided.
 - `StorefrontApi` exports typed `getCatalog()`, `getHomepageContent()`, and cart operations over same-origin `/api/storefront/*` endpoints.
 
-- [ ] Add only required Netlify runtime/type dependencies and define function directory/routing without placing secrets in `netlify.toml`.
-- [ ] Implement config parsing for the spec's `SHOPIFY_*` variables; keep browser-visible config limited to preview/live status.
-- [ ] Implement separate internal GraphQL transports for Admin and Storefront APIs, with bounded response parsing and explicit errors.
-- [ ] Define normalized TypeScript product, variant, content, and cart contracts plus the client API interface.
-- [ ] Add a secret-free `.env.example` and `/admin` SPA rewrites in the correct order.
-- [ ] Run `npm run build` and `npm run lint`; expected: both exit 0.
-- [ ] Review the diff to confirm no secret uses a `VITE_` name and no arbitrary GraphQL endpoint is exposed.
+- [x] Add only the required Netlify runtime/type dependencies (`@netlify/blobs`, `@netlify/functions`); keep plain Vite as `npm run dev` and configure optional `netlify dev` to proxy the Vite server plus functions without placing secrets in `netlify.toml`.
+- [x] Add a referenced `tsconfig.netlify.json` so `npm run build` type-checks `netlify/functions/**/*.ts`; require Node `>=22.12.0` for the installed Netlify packages.
+- [x] Implement config parsing for the spec's `SHOPIFY_*` variables; keep browser-visible config limited to preview/live status.
+- [x] Implement separate internal GraphQL transports for Admin and Storefront APIs, with bounded response parsing and explicit errors.
+- [x] Define normalized TypeScript product, variant, content, and cart contracts plus the client API interface.
+- [x] Add a secret-free `.env.example` and `/admin` SPA rewrites in the correct order.
+- [x] Pin the Admin and Storefront GraphQL endpoint version centrally to `2026-10` and set that safe default in `.env.example`.
+- [x] Run `npm run build` and `npm run lint`; both exit 0.
+- [x] Review the diff to confirm no secret uses a `VITE_` name and no arbitrary GraphQL endpoint is exposed.
 - [ ] Commit and push this milestone.
 
 ### Task 2: Shopify catalog and cart, with safe preview mode

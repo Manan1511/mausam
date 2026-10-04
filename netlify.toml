@@ -1,3 +1,37 @@
 [build]
   command = "npm run build"
   publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 5173
+  port = 8888
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/storefront/:resource"
+  to = "/.netlify/functions/storefront-:resource"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/auth/:action"
+  to = "/.netlify/functions/admin-auth-:action"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/:resource"
+  to = "/.netlify/functions/admin-:resource"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/index.html"
+  status = 200
