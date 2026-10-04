@@ -1,4 +1,4 @@
-export const DEFAULT_SHOPIFY_API_VERSION = '2026-10'
+export const DEFAULT_SHOPIFY_API_VERSION = '2026-07'
 export const REQUIRED_ADMIN_SCOPES = ['read_products', 'write_metaobjects', 'write_files'] as const
 
 export interface ShopifyRuntimeConfig {

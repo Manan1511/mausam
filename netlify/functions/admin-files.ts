@@ -115,15 +115,18 @@ function hasImageSignature(bytes: Uint8Array, mime: string): boolean {
   return false
 }
 
-function validStageUrl(value: string): URL | null {
+function validStageUrl(value: string, shopDomain: string): URL | null {
   try {
     const url = new URL(value)
     const host = url.hostname.toLowerCase()
+    const shopStagingPath = host === shopDomain &&
+      (url.pathname === '/admin/tmp/files' || url.pathname.startsWith('/admin/tmp/files/'))
     const trustedUploadHost = host === 'storage.googleapis.com' ||
       host.endsWith('.storage.googleapis.com') ||
       host === 's3.amazonaws.com' ||
       host.endsWith('.s3.amazonaws.com')
-    return url.protocol === 'https:' && !url.username && !url.password && trustedUploadHost ? url : null
+    return url.protocol === 'https:' && !url.username && !url.password && !url.hash &&
+      !url.port && (shopStagingPath || trustedUploadHost) ? url : null
   } catch {
     return null
   }
@@ -183,7 +186,7 @@ async function uploadImage(request: Request, token: string, shopDomain: string):
   })
   const stagedPayload = staged.stagedUploadsCreate
   const target = stagedPayload.stagedTargets?.[0]
-  const uploadUrl = target ? validStageUrl(target.url) : null
+  const uploadUrl = target ? validStageUrl(target.url, shopDomain) : null
   const resourceUrl = target ? validResourceUrl(target.resourceUrl, shopDomain) : null
   if (stagedPayload.userErrors.length || !target || !uploadUrl || !resourceUrl || !target.parameters?.length) {
     throw new HttpError('Shopify could not prepare the image upload.', 502)

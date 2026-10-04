@@ -184,7 +184,7 @@ export async function requireAdminSession(request: Request): Promise<AdminSessio
 
     return { ...stored, sessionId }
   } catch (error) {
-    if (error instanceof ShopifyApiError && (error.status === 401 || error.code === 'GRAPHQL')) {
+    if (error instanceof ShopifyApiError && error.status === 401) {
       await deleteAdminSession(sessionId)
       return jsonResponse({ error: 'Shopify access is no longer available. Sign in again.' }, 401, {
         'set-cookie': clearAdminSessionCookie(),

@@ -76,7 +76,7 @@ Document the future Netlify variables in `.env.example`/setup docs without value
 - `SHOPIFY_ADMIN_EMAIL_ALLOWLIST`
 - `SHOPIFY_ADMIN_SCOPES` (the minimum verified scopes for the implemented fields/mutations)
 - `SHOPIFY_STOREFRONT_PRIVATE_TOKEN` (or the selected least-privilege Storefront credential)
-- `SHOPIFY_API_VERSION` (centralized and pinned to `2026-10`, the current stable version as of 2026-10-05; review before its support window ends)
+- `SHOPIFY_API_VERSION` (centralized and pinned to `2026-07`, the latest stable version verified on 2026-10-05; review before its support window ends)
 
 OAuth token and session material stay only in server-side Blobs. Keep `npm run dev` as plain Vite so the established frontend workflow stays intact. Use `netlify dev` when local API routes and Blobs emulation are needed; configure its proxy target to the existing Vite server. Do not add the Vite plugin because its current development dependency tree introduces high-severity advisories; document the Netlify CLI prerequisite and its supported Node version. Plain Vite alone is not evidence that backend routes work.
 
@@ -119,7 +119,7 @@ OAuth token and session material stay only in server-side Blobs. Keep `npm run d
 
 - Shopify documents the authorization-code grant for apps outside Shopify Admin and distinguishes staff-scoped online tokens from offline store tokens. Online-token email is trusted only when Shopify reports `email_verified`.
 - Shopify's Storefront API requires `unauthenticated_read_metaobjects` for public metaobject reads; a metaobject definition must allow `PUBLIC_READ`. Storefront Cart API exposes the hosted `checkoutUrl`.
-- Shopify API versions move over time. Do not copy the `2024-10` version from the reference document; `2026-10` is the supported stable version on this spec date and needs review before its support window ends.
+- Shopify API versions move over time. Do not copy the `2024-10` version from the reference document. Shopify's versioning page lists `2026-10` as a release candidate and `2026-07` as latest stable on 2026-10-05, so the integration pins to `2026-07` until a stable release is confirmed.
 - No code, app secrets, or Shopify resources have been changed by this design step.
 
 References:
@@ -129,3 +129,5 @@ References:
 - [Shopify metaobjects](https://shopify.dev/docs/apps/build/metaobjects)
 - [Storefront metaobjects query](https://shopify.dev/docs/api/storefront/latest/queries/metaobject)
 - [Storefront cart and hosted checkout](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart/manage)
+- [Shopify API versioning](https://shopify.dev/docs/api/usage/versioning)
+- [Shopify staged uploads](https://shopify.dev/docs/api/admin-graphql/latest/mutations/stagedUploadsCreate)
