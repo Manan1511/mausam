@@ -9,6 +9,7 @@ export interface ShopifyRuntimeConfig {
   adminEmailAllowlist: string[]
   adminScopes: string[]
   storefrontPrivateToken: string | null
+  checkoutAllowedHosts: string[]
 }
 
 function readEnv(name: string): string | undefined {
@@ -50,6 +51,10 @@ export function getShopifyRuntimeConfig(): ShopifyRuntimeConfig {
     .map((email) => email.toLowerCase())
   const adminScopes = parseList(readEnv('SHOPIFY_ADMIN_SCOPES'))
   const storefrontPrivateToken = readEnv('SHOPIFY_STOREFRONT_PRIVATE_TOKEN')?.trim() || null
+  const checkoutAllowedHosts = [shopDomain, ...parseList(readEnv('SHOPIFY_CHECKOUT_ALLOWED_HOSTS'))]
+    .filter((host): host is string => Boolean(host))
+    .map((host) => host.trim().toLowerCase())
+    .filter((host) => /^[a-z0-9.-]+$/.test(host))
   const liveConfigurationComplete = Boolean(
     shopDomain && apiKey && apiSecret && adminEmailAllowlist.length && storefrontPrivateToken,
   )
@@ -66,5 +71,6 @@ export function getShopifyRuntimeConfig(): ShopifyRuntimeConfig {
     adminEmailAllowlist,
     adminScopes,
     storefrontPrivateToken,
+    checkoutAllowedHosts,
   }
 }

@@ -60,19 +60,50 @@ export interface StorefrontApi {
   mutateCart(operation: CartOperation): Promise<StorefrontCart>
 }
 
+export const storefrontBuildMode: 'preview' | 'live' =
+  import.meta.env.VITE_SHOPIFY_MODE === 'live' ? 'live' : 'preview'
+
 export const storefrontApi: StorefrontApi = {
   getStatus: () => request<StorefrontStatus>('/api/storefront/status'),
   getCatalog: async () => {
-    const result = await request<{ products: StoreProduct[] }>('/api/storefront/catalog')
-    return result.products
+    const products: StoreProduct[] = []
+    let after: string | null = null
+    let page = 0
+    let hasNextPage: boolean
+
+    do {
+      const search: string = after !== null ? `?after=${encodeURIComponent(after)}` : ''
+      const result: {
+        products: StoreProduct[]
+        pageInfo: { hasNextPage: boolean; endCursor: string | null }
+      } = await request<{
+        products: StoreProduct[]
+        pageInfo: { hasNextPage: boolean; endCursor: string | null }
+      }>(`/api/storefront/catalog${search}`)
+      products.push(...result.products)
+      after = result.pageInfo.endCursor
+      hasNextPage = result.pageInfo.hasNextPage
+      page += 1
+
+      if (hasNextPage && !after) {
+        throw new StorefrontApiError('The catalog could not be fully loaded.', 502)
+      }
+      if (hasNextPage && page >= 10) {
+        throw new StorefrontApiError('The catalog exceeds the supported size.', 413)
+      }
+    } while (hasNextPage)
+
+    return products
   },
   getHomepageContent: async () => {
     const result = await request<{ content: HomepageContent | null }>('/api/storefront/homepage')
     return result.content
   },
-  mutateCart: (operation) =>
-    request<StorefrontCart>('/api/storefront/cart', {
+  mutateCart: async (operation) => {
+    const result = await request<{ cart: StorefrontCart }>('/api/storefront/cart', {
       method: 'POST',
       body: JSON.stringify(operation),
-    }),
+    })
+    return result.cart
+  },
 }

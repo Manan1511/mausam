@@ -1,11 +1,9 @@
 import { useState, useMemo, useEffect } from 'react'
-import {
-  productsByCategory,
-  type ProductCategory,
-  type ProductItem,
-} from '../data'
+import type { ProductCategory } from '../data'
 import { useCart } from '../context/cartContextDef'
-import { parsePriceToNumber } from '../utils/cartUtils'
+import { formatMoney } from '../utils/cartUtils'
+import { ProductVariantSelect } from './ProductVariantPicker'
+import { useProductVariant } from '../hooks/useProductVariant'
 
 type ShopCategory = 'all' | ProductCategory
 type SortOption = 'featured' | 'price-asc' | 'price-desc'
@@ -14,25 +12,10 @@ const CATEGORY_ALL: ShopCategory = 'all'
 const CATEGORY_CANDLES: ProductCategory = 'candles'
 const CATEGORY_BOUQUETS: ProductCategory = 'bouquets'
 
-const categoryTabs: { id: ShopCategory; label: string; href: string; count: number }[] = [
-  {
-    id: CATEGORY_ALL,
-    label: 'All Creations',
-    href: '#shop',
-    count: productsByCategory.candles.length + productsByCategory.bouquets.length,
-  },
-  {
-    id: CATEGORY_CANDLES,
-    label: 'Artisanal Candles',
-    href: '#shop/candles',
-    count: productsByCategory.candles.length,
-  },
-  {
-    id: CATEGORY_BOUQUETS,
-    label: 'Floral Bouquets',
-    href: '#shop/bouquets',
-    count: productsByCategory.bouquets.length,
-  },
+const categoryTabs: { id: ShopCategory; label: string; href: string }[] = [
+  { id: CATEGORY_ALL, label: 'All Creations', href: '#shop' },
+  { id: CATEGORY_CANDLES, label: 'Artisanal Candles', href: '#shop/candles' },
+  { id: CATEGORY_BOUQUETS, label: 'Floral Bouquets', href: '#shop/bouquets' },
 ]
 
 interface ShopPageProps {
@@ -45,7 +28,7 @@ export default function ShopPage({
   onNavigateHome,
 }: ShopPageProps) {
   const [sortBy, setSortBy] = useState<SortOption>('featured')
-  const { addItem } = useCart()
+  const { products, status } = useCart()
 
   // Scroll to top on mount or when category changes
   useEffect(() => {
@@ -53,27 +36,26 @@ export default function ShopPage({
   }, [category])
 
   const filteredProducts = useMemo(() => {
-    let list: ProductItem[] = []
-    if (category === CATEGORY_ALL) {
-      list = [...productsByCategory.candles, ...productsByCategory.bouquets]
-    } else if (category === CATEGORY_CANDLES) {
-      list = [...productsByCategory.candles]
-    } else if (category === CATEGORY_BOUQUETS) {
-      list = [...productsByCategory.bouquets]
-    }
+    const list = products.filter((product) =>
+      category === CATEGORY_ALL || product.category === category,
+    )
 
     if (sortBy === 'price-asc') {
       return [...list].sort(
-        (a, b) => parsePriceToNumber(a.price) - parsePriceToNumber(b.price)
+        (a, b) => Number(a.priceRange.min.amount) - Number(b.priceRange.min.amount),
       )
     }
     if (sortBy === 'price-desc') {
       return [...list].sort(
-        (a, b) => parsePriceToNumber(b.price) - parsePriceToNumber(a.price)
+        (a, b) => Number(b.priceRange.min.amount) - Number(a.priceRange.min.amount),
       )
     }
     return list
-  }, [category, sortBy])
+  }, [category, products, sortBy])
+
+  const categoryCount = (selected: ShopCategory) => selected === CATEGORY_ALL
+    ? products.length
+    : products.filter((product) => product.category === selected).length
 
   return (
     <div className="min-h-screen bg-cream">
@@ -155,7 +137,7 @@ export default function ShopPage({
                       isActive ? 'bg-cream/20 text-cream' : 'bg-beige text-muted'
                     }`}
                   >
-                    {tab.count}
+                    {categoryCount(tab.id)}
                   </span>
                 </a>
               )
@@ -183,86 +165,21 @@ export default function ShopPage({
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
           {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="hover-lift border border-border bg-cream flex flex-col justify-between overflow-hidden group hover:border-gold/80 transition-all duration-500"
-            >
-              {/* Image Container */}
-              <div className="relative aspect-4/5 overflow-hidden bg-beige">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-                {product.badge && (
-                  <div className="absolute top-3 left-3 bg-cream/92 px-2.5 py-1 text-[9px] tracking-[0.1em] uppercase font-medium text-ink shadow-xs">
-                    {product.badge}
-                  </div>
-                )}
-                <div className="absolute top-3 right-3 bg-ink/80 text-cream px-2 py-0.5 text-[8px] tracking-[0.12em] uppercase font-sans">
-                  {product.category === CATEGORY_CANDLES ? 'Candle' : 'Bouquet'}
-                </div>
-              </div>
-
-              {/* Product Details */}
-              <div className="p-5 flex flex-col flex-1 justify-between">
-                <div>
-                  <div className="text-[10px] tracking-[0.14em] uppercase text-gold mb-1 font-medium">
-                    {product.category === CATEGORY_CANDLES
-                      ? 'Artisanal Candle'
-                      : 'Floral Keepsake'}
-                  </div>
-                  <h3 className="font-serif text-lg md:text-xl font-medium m-0 mb-1.5 text-ink leading-snug">
-                    {product.name}
-                  </h3>
-                  <p className="text-xs text-muted font-light leading-relaxed m-0 mb-3 line-clamp-2">
-                    {product.description}
-                  </p>
-                  {product.specs.scentNotes && (
-                    <p className="text-[11px] text-ink/80 font-light italic m-0 mb-3 border-l-2 border-gold/50 pl-2">
-                      {product.specs.scentNotes}
-                    </p>
-                  )}
-                  {product.specs.burnTime && (
-                    <div className="text-[10px] text-muted tracking-wider mb-3">
-                      Burn Time: {product.specs.burnTime}
-                    </div>
-                  )}
-                  {product.specs.material && !product.specs.burnTime && (
-                    <div className="text-[10px] text-muted tracking-wider mb-3 line-clamp-1">
-                      {product.specs.material}
-                    </div>
-                  )}
-                </div>
-
-                {/* Price and Add to Bag */}
-                <div className="pt-3 border-t border-border flex items-center justify-between text-sm gap-2">
-                  <span className="font-medium text-ink shrink-0">{product.price}</span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      addItem({
-                        id: product.id,
-                        name: product.name,
-                        category: product.category,
-                        price: parsePriceToNumber(product.price),
-                        priceFormatted: product.price,
-                        image: product.image,
-                        subtitle: product.specs.scentNotes || product.subtitle,
-                      })
-                    }
-                    className="text-[10px] tracking-[0.12em] uppercase font-medium bg-beige hover:bg-ink text-ink hover:text-cream active:scale-95 px-3 py-1.5 transition-all duration-300 border border-border cursor-pointer shrink-0"
-                    aria-label={`Add ${product.name} to bag`}
-                  >
-                    Add to Bag
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ShopProductCard key={product.id} product={product} />
           ))}
         </div>
+
+        {status === 'loading' && products.length === 0 && (
+          <p className="py-12 text-center text-sm text-muted" role="status">Loading the atelier collection…</p>
+        )}
+        {status === 'unavailable' && (
+          <p className="py-12 text-center text-sm text-muted" role="alert">
+            The live collection is temporarily unavailable. Please refresh to try again.
+          </p>
+        )}
+        {status === 'ready' && filteredProducts.length === 0 && (
+          <p className="py-12 text-center text-sm text-muted">No creations in this collection yet.</p>
+        )}
 
         {/* Custom Gifting Inquiry Banner */}
         <div className="mt-16 p-8 bg-beige/60 border border-border text-center max-w-3xl mx-auto">
@@ -292,6 +209,96 @@ export default function ShopPage({
               Return to Atelier
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ShopProductCard({ product }: { product: import('../types/shopify').StoreProduct }) {
+  const { variantId, setVariantId, canAdd, addToBag } = useProductVariant(product)
+  const categoryLabel = product.category === CATEGORY_CANDLES
+    ? 'Artisanal Candle'
+    : product.category === CATEGORY_BOUQUETS
+      ? 'Floral Keepsake'
+      : product.vendor
+
+  return (
+    <div className="hover-lift border border-border bg-cream flex flex-col justify-between overflow-hidden group hover:border-gold/80 transition-all duration-500">
+      <div className="relative aspect-4/5 overflow-hidden bg-beige">
+        {product.image ? (
+          <img
+            src={product.image.url}
+            alt={product.image.altText || product.title}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full" aria-label={`${product.title} image unavailable`} />
+        )}
+        {product.badge && (
+          <div className="absolute top-3 left-3 bg-cream/92 px-2.5 py-1 text-[9px] tracking-[0.1em] uppercase font-medium text-ink shadow-xs">
+            {product.badge}
+          </div>
+        )}
+        {product.category && (
+          <div className="absolute top-3 right-3 bg-ink/80 text-cream px-2 py-0.5 text-[8px] tracking-[0.12em] uppercase font-sans">
+            {product.category === CATEGORY_CANDLES ? 'Candle' : 'Bouquet'}
+          </div>
+        )}
+      </div>
+
+      <div className="p-5 flex flex-col flex-1 justify-between">
+        <div>
+          <div className="text-[10px] tracking-[0.14em] uppercase text-gold mb-1 font-medium">
+            {categoryLabel}
+          </div>
+          <h3 className="font-serif text-lg md:text-xl font-medium m-0 mb-1.5 text-ink leading-snug">
+            {product.title}
+          </h3>
+          <p className="text-xs text-muted font-light leading-relaxed m-0 mb-3 line-clamp-2">
+            {product.description}
+          </p>
+          {product.specs.scentNotes && (
+            <p className="text-[11px] text-ink/80 font-light italic m-0 mb-3 border-l-2 border-gold/50 pl-2">
+              {product.specs.scentNotes}
+            </p>
+          )}
+          {product.specs.burnTime && (
+            <div className="text-[10px] text-muted tracking-wider mb-3">
+              Burn Time: {product.specs.burnTime}
+            </div>
+          )}
+          {product.specs.material && !product.specs.burnTime && (
+            <div className="text-[10px] text-muted tracking-wider mb-3 line-clamp-1">
+              {product.specs.material}
+            </div>
+          )}
+        </div>
+
+        <ProductVariantSelect
+          product={product}
+          value={variantId}
+          onChange={setVariantId}
+          className="mb-2"
+        />
+        <div className="pt-3 border-t border-border flex items-center justify-between text-sm gap-2">
+          <span className="font-medium text-ink shrink-0">
+            {formatMoney(product.priceRange.min.amount, product.priceRange.min.currencyCode)}
+            {product.priceRange.min.amount !== product.priceRange.max.amount && (
+              <span className="text-xs text-muted"> – {formatMoney(product.priceRange.max.amount, product.priceRange.max.currencyCode)}</span>
+            )}
+          </span>
+          <button
+            type="button"
+            onClick={() => void addToBag()}
+            disabled={!canAdd}
+            className="text-[10px] tracking-[0.12em] uppercase font-medium bg-beige hover:bg-ink text-ink hover:text-cream active:scale-95 px-3 py-1.5 transition-all duration-300 border border-border cursor-pointer shrink-0 disabled:opacity-45 disabled:cursor-not-allowed"
+            aria-label={`Add ${product.title} to bag`}
+          >
+            {product.availableForSale ? 'Add to Bag' : 'Sold Out'}
+          </button>
         </div>
       </div>
     </div>

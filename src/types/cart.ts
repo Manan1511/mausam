@@ -1,59 +1,44 @@
-import { type ProductCategory } from '../data'
+import type { HomepageContent, StoreProduct, StoreProductCategory } from './shopify'
 
 export const MAUSAM_CART_STORAGE_KEY = 'mausam_artwork_cart_v1'
-export const ORDERS_STORAGE_KEY = 'mausam_artwork_orders_v1'
-export const DEFAULT_CURRENCY = '₹'
+export const SHOPIFY_CART_STORAGE_KEY = 'mausam_artwork_shopify_cart_id_v1'
+export const DEFAULT_CURRENCY = 'INR'
 export const COMPLIMENTARY_SHIPPING_LABEL = 'Complimentary Atelier Delivery'
-export const PINCODE_LENGTH = 6
-export const PHONE_MIN_DIGITS = 10
 
 export interface CartItem {
   id: string
+  variantId: string
   name: string
-  category: ProductCategory
-  price: number
-  priceFormatted: string
+  variantTitle: string
+  category: StoreProductCategory | null
+  unitPrice: { amount: string; currencyCode: string }
   image: string
   quantity: number
   subtitle?: string
 }
 
-export type AddCartItemInput = Omit<CartItem, 'quantity'> & { quantity?: number }
-
-export interface ShippingAddress {
-  fullName: string
-  phone: string
-  email: string
-  addressLine: string
-  city: string
-  state: string
-  pincode: string
-  giftNote?: string
-}
-
-export interface PlacedOrder {
-  orderId: string
-  createdAt: string
-  items: CartItem[]
-  subtotal: number
-  shipping: string
-  shippingAddress: ShippingAddress
-  paymentStatus: 'Pending Atelier Confirmation'
-}
-
 export interface CartContextType {
+  mode: 'preview' | 'live'
+  status: 'loading' | 'ready' | 'unavailable'
+  products: StoreProduct[]
+  featuredProducts: StoreProduct[]
+  homepageContent: HomepageContent | null
+  homepageStatus: 'loading' | 'ready' | 'unavailable'
   items: CartItem[]
   isCartOpen: boolean
   isCheckoutOpen: boolean
+  isCartMutating: boolean
+  cartError: string | null
   totalItems: number
-  subtotal: number
+  subtotalAmount: string
+  subtotalCurrencyCode: string
   subtotalFormatted: string
   openCart: () => void
   closeCart: () => void
   openCheckout: () => void
   closeCheckout: () => void
-  addItem: (item: AddCartItemInput) => void
-  removeItem: (id: string) => void
-  updateQuantity: (id: string, delta: number) => void
-  clearCart: () => void
+  addItem: (product: StoreProduct, variantId: string, quantity?: number) => Promise<void>
+  removeItem: (id: string) => Promise<void>
+  updateQuantity: (id: string, quantity: number) => Promise<void>
+  checkout: () => Promise<void>
 }

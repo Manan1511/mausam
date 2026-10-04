@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useCart } from '../context/cartContextDef'
-import { formatPriceINR } from '../utils/cartUtils'
+import { formatMoney } from '../utils/cartUtils'
 import { COMPLIMENTARY_SHIPPING_LABEL } from '../types/cart'
 
 export default function CartDrawer() {
@@ -8,9 +8,13 @@ export default function CartDrawer() {
     items,
     isCartOpen,
     totalItems,
-    subtotal,
+    subtotalFormatted,
+    mode,
+    status,
+    isCartMutating,
+    cartError,
     closeCart,
-    openCheckout,
+    checkout,
     removeItem,
     updateQuantity,
   } = useCart()
@@ -47,6 +51,7 @@ export default function CartDrawer() {
       aria-modal="true"
       aria-label="Shopping Cart Drawer"
       aria-hidden={!isCartOpen}
+      inert={!isCartOpen}
     >
       {/* Backdrop */}
       <div
@@ -87,6 +92,9 @@ export default function CartDrawer() {
 
           {/* Drawer Body */}
           <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
+            {cartError && (
+              <p role="alert" className="text-xs text-red-700 text-center m-0">{cartError}</p>
+            )}
             {items.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-12 px-4">
                 <div className="w-16 h-16 rounded-full bg-beige border border-border flex items-center justify-center mb-4 text-gold">
@@ -134,7 +142,11 @@ export default function CartDrawer() {
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <span className="text-[9px] tracking-[0.14em] uppercase text-gold block mb-0.5">
-                              {item.category === 'candles' ? 'Artisanal Candle' : 'Floral Bouquet'}
+                              {item.category === 'candles'
+                                ? 'Artisanal Candle'
+                                : item.category === 'bouquets'
+                                  ? 'Floral Bouquet'
+                                  : 'Atelier Creation'}
                             </span>
                             <h4 className="font-serif text-base font-medium text-ink truncate m-0">
                               {item.name}
@@ -162,6 +174,9 @@ export default function CartDrawer() {
                             {item.subtitle}
                           </p>
                         )}
+                        {item.variantTitle !== 'Standard' && item.variantTitle !== 'Default Title' && (
+                          <p className="text-[10px] text-muted mt-0.5 m-0">{item.variantTitle}</p>
+                        )}
                       </div>
 
                       {/* Quantity and Price */}
@@ -169,7 +184,10 @@ export default function CartDrawer() {
                         <div className="flex items-center border border-border bg-white">
                           <button
                             type="button"
-                            onClick={() => updateQuantity(item.id, -1)}
+                            onClick={() => item.quantity === 1
+                              ? void removeItem(item.id)
+                              : void updateQuantity(item.id, item.quantity - 1)}
+                            disabled={isCartMutating}
                             className="w-7 h-7 flex items-center justify-center text-xs text-ink hover:bg-beige transition-colors cursor-pointer"
                             aria-label="Decrease quantity"
                           >
@@ -180,7 +198,8 @@ export default function CartDrawer() {
                           </span>
                           <button
                             type="button"
-                            onClick={() => updateQuantity(item.id, 1)}
+                            onClick={() => void updateQuantity(item.id, item.quantity + 1)}
+                            disabled={isCartMutating || item.quantity >= 99}
                             className="w-7 h-7 flex items-center justify-center text-xs text-ink hover:bg-beige transition-colors cursor-pointer"
                             aria-label="Increase quantity"
                           >
@@ -188,7 +207,10 @@ export default function CartDrawer() {
                           </button>
                         </div>
                         <span className="font-medium text-sm text-ink">
-                          {formatPriceINR(item.price * item.quantity)}
+                          {formatMoney(
+                            Number(item.unitPrice.amount) * item.quantity,
+                            item.unitPrice.currencyCode,
+                          )}
                         </span>
                       </div>
                     </div>
@@ -204,26 +226,35 @@ export default function CartDrawer() {
               <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between items-center text-muted">
                   <span>Shipping</span>
-                  <span className="text-ink font-medium">{COMPLIMENTARY_SHIPPING_LABEL}</span>
+                  <span className="text-ink font-medium">
+                    {mode === 'preview' ? COMPLIMENTARY_SHIPPING_LABEL : 'Calculated at checkout'}
+                  </span>
                 </div>
                 <div className="flex justify-between items-baseline pt-2 border-t border-border">
                   <span className="font-serif text-lg font-medium text-ink">Subtotal</span>
                   <span className="font-serif text-xl font-medium text-ink">
-                    {formatPriceINR(subtotal)}
+                    {subtotalFormatted}
                   </span>
                 </div>
                 <p className="text-[10px] text-muted text-center pt-1 m-0">
-                  Taxes and complimentary atelier gift packaging included.
+                  {mode === 'preview'
+                    ? 'Preview prices only · checkout is disabled.'
+                    : 'Taxes and shipping are confirmed securely at Shopify checkout.'}
                 </p>
               </div>
 
               <div className="space-y-2">
                 <button
                   type="button"
-                  onClick={openCheckout}
-                  className="w-full py-3.5 bg-ink text-cream text-xs tracking-[0.14em] uppercase font-medium transition-colors duration-300 hover:bg-gold cursor-pointer text-center block shadow-sm"
+                  onClick={() => void checkout()}
+                  disabled={isCartMutating || status !== 'ready'}
+                  className="w-full py-3.5 bg-ink text-cream text-xs tracking-[0.14em] uppercase font-medium transition-colors duration-300 hover:bg-gold cursor-pointer text-center block shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Proceed to Checkout →
+                  {isCartMutating
+                    ? 'Updating Bag…'
+                    : mode === 'preview'
+                      ? 'Checkout unavailable in preview'
+                      : 'Proceed to Checkout →'}
                 </button>
                 <button
                   type="button"

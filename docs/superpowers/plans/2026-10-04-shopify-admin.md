@@ -97,12 +97,12 @@ These inputs need explicit verification because no Shopify store exists for end-
 - Cart context exposes `mode`, `status`, `items`, `addItem(product, variantId, quantity?)`, `removeItem(lineId)`, `updateQuantity(lineId, quantity)`, and `checkout(): Promise<void>`; preview mode may show a local preview bag but `checkout()` cannot create an order. Live mode persists only Shopify's cart identifier.
 - `POST /api/storefront/cart` accepts a validated cart operation and returns Shopify cart state; checkout response contains only a validated Shopify `checkoutUrl`.
 
-- [ ] Query and normalize Shopify products, available variants, currency, product references, and the public-read homepage metaobject; preserve current `src/data.ts` exclusively as preview data.
-- [ ] Implement public catalog/status functions. In live mode, upstream failure returns an explicit error and must not return static preview prices.
-- [ ] Replace client-only live-cart arithmetic with Shopify cart create/update/remove operations; persist only the Shopify cart identifier in the browser.
-- [ ] Replace the fake `CheckoutModal` order form/confirmation with an explicit preview-unavailable state and live redirect to Shopify's `checkoutUrl`.
-- [ ] Update shop and featured-product actions to send variant IDs; require a choice when a Shopify product has multiple variants rather than silently choosing one.
-- [ ] Run `npm run build` and `npm run lint`; expected: both exit 0. Inspect preview and live-mode branches for the five Review Focus cases relevant to this task.
+- [x] Query and normalize Shopify products, available variants, currency, product references, and the public-read homepage metaobject; preserve current `src/data.ts` exclusively as preview data.
+- [x] Implement public catalog/status functions. In live mode, upstream failure returns an explicit error and must not return static preview prices.
+- [x] Replace client-only live-cart arithmetic with Shopify cart create/update/remove operations; persist only the Shopify cart identifier in the browser.
+- [x] Replace the fake `CheckoutModal` order form/confirmation with an explicit preview-unavailable state and live redirect to Shopify's `checkoutUrl`.
+- [x] Update shop and featured-product actions to send variant IDs; require a choice when a Shopify product has multiple variants rather than silently choosing one.
+- [x] Run `npm run build` and `npm run lint`; both exit 0. Inspect preview and live-mode branches for the five Review Focus cases relevant to this task.
 - [ ] Commit and push this milestone.
 
 ### Task 3: Shopify OAuth and protected admin functions

@@ -1,3 +1,5 @@
+export type StoreProductCategory = 'candles' | 'bouquets'
+
 export interface StoreVariant {
   id: string
   title: string
@@ -14,6 +16,9 @@ export interface StoreProduct {
   id: string
   handle: string
   title: string
+  category: StoreProductCategory | null
+  subtitle: string
+  badge: string | null
   description: string
   vendor: string
   availableForSale: boolean
@@ -23,6 +28,11 @@ export interface StoreProduct {
     max: { amount: string; currencyCode: string }
   }
   variants: StoreVariant[]
+  specs: {
+    burnTime?: string
+    material?: string
+    scentNotes?: string
+  }
 }
 
 export interface StorefrontMedia {
@@ -81,6 +91,7 @@ export interface StorefrontCartLine {
   title: string
   variantTitle: string
   productHandle: string
+  category: StoreProductCategory | null
   imageUrl: string | null
   unitPrice: { amount: string; currencyCode: string }
 }
@@ -95,6 +106,7 @@ export interface StorefrontCart {
 
 export type CartOperation =
   | { action: 'create' }
+  | { action: 'read'; cartId: string }
   | { action: 'add'; cartId?: string; variantId: string; quantity: number }
   | { action: 'update'; cartId: string; lineId: string; quantity: number }
   | { action: 'remove'; cartId: string; lineId: string }

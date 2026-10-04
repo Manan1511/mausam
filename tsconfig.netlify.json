@@ -17,5 +17,10 @@
     "noFallthroughCasesInSwitch": true,
     "composite": true
   },
-  "include": ["netlify/functions/**/*.ts"]
+  "include": [
+    "netlify/functions/**/*.ts",
+    "src/data.ts",
+    "src/services/previewCatalog.ts",
+    "src/types/shopify.ts"
+  ]
 }
