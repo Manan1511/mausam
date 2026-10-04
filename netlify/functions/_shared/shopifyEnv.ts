@@ -1,8 +1,11 @@
 export const DEFAULT_SHOPIFY_API_VERSION = '2026-10'
+export const REQUIRED_ADMIN_SCOPES = ['read_products', 'write_metaobjects', 'write_files'] as const
 
 export interface ShopifyRuntimeConfig {
   mode: 'preview' | 'live'
+  adminConfigured: boolean
   apiVersion: string
+  appOrigin: string | null
   shopDomain: string | null
   apiKey: string | null
   apiSecret: string | null
@@ -29,11 +32,33 @@ function parseShopDomain(value: string | undefined): string | null {
   return domain
 }
 
+function parseAppOrigin(value: string | undefined): string | null {
+  const candidate = value?.trim()
+  if (!candidate) return null
+
+  try {
+    const url = new URL(candidate)
+    if (
+      url.protocol !== 'https:' ||
+      url.username ||
+      url.password ||
+      url.pathname !== '/' ||
+      url.search ||
+      url.hash
+    ) {
+      return null
+    }
+    return url.origin
+  } catch {
+    return null
+  }
+}
+
 function parseList(value: string | undefined): string[] {
-  return (value ?? '')
+  return Array.from(new Set((value ?? '')
     .split(/[\s,;]+/)
     .map((entry) => entry.trim())
-    .filter(Boolean)
+    .filter(Boolean)))
 }
 
 function parseApiVersion(value: string | undefined): string {
@@ -45,6 +70,7 @@ function parseApiVersion(value: string | undefined): string {
 
 export function getShopifyRuntimeConfig(): ShopifyRuntimeConfig {
   const shopDomain = parseShopDomain(readEnv('SHOPIFY_SHOP_DOMAIN'))
+  const appOrigin = parseAppOrigin(readEnv('SHOPIFY_APP_URL'))
   const apiKey = readEnv('SHOPIFY_API_KEY')?.trim() || null
   const apiSecret = readEnv('SHOPIFY_API_SECRET')?.trim() || null
   const adminEmailAllowlist = parseList(readEnv('SHOPIFY_ADMIN_EMAIL_ALLOWLIST'))
@@ -58,13 +84,24 @@ export function getShopifyRuntimeConfig(): ShopifyRuntimeConfig {
   const liveConfigurationComplete = Boolean(
     shopDomain && apiKey && apiSecret && adminEmailAllowlist.length && storefrontPrivateToken,
   )
+  const adminConfigured = Boolean(
+    shopDomain &&
+      appOrigin &&
+      apiKey &&
+      apiSecret &&
+      adminEmailAllowlist.length &&
+      REQUIRED_ADMIN_SCOPES.every((scope) => adminScopes.includes(scope)) &&
+      adminScopes.every((scope) => REQUIRED_ADMIN_SCOPES.includes(scope as typeof REQUIRED_ADMIN_SCOPES[number])),
+  )
 
   return {
     mode:
       readEnv('SHOPIFY_MODE')?.trim().toLowerCase() === 'live' && liveConfigurationComplete
         ? 'live'
         : 'preview',
+    adminConfigured,
     apiVersion: parseApiVersion(readEnv('SHOPIFY_API_VERSION')),
+    appOrigin,
     shopDomain,
     apiKey,
     apiSecret,

@@ -124,13 +124,13 @@ These inputs need explicit verification because no Shopify store exists for end-
 - `GET /api/admin/session` returns only `{ authenticated, email?, configured }`; it never returns tokens.
 - `/api/admin/content` supports authenticated read/save of the fixed homepage metaobject; `/api/admin/products` returns selectable Shopify products; `/api/admin/files` implements validated Shopify Files staged upload.
 
-- [ ] Implement fixed-shop OAuth start/callback with unpredictable state, exact redirect URI, callback HMAC validation, and Shopify online-token response validation.
-- [ ] Persist access token and expiry in a strong-consistency site-scoped Blobs store under an opaque random session key; set only a Secure, HttpOnly, SameSite=Lax cookie in the browser.
-- [ ] Enforce the server allowlist and `email_verified === true`; empty allowlist, malformed shop, invalid state/HMAC, expired token, or unknown session fails closed.
-- [ ] Add CSRF/origin checks for every mutation; define narrow fixed handlers, server-side payload validation, and safe error responses (no arbitrary Admin GraphQL proxy).
-- [ ] Implement content/product/file operations using only scopes required by those exact operations; reject unapproved product references and non-image/oversized uploads.
-- [ ] Run `npm run build` and `npm run lint`; expected: both exit 0. Inspect all rejection branches and confirm no credentials/session IDs are returned or logged.
-- [ ] Commit and push this milestone.
+- [x] Implement fixed-shop OAuth start/callback with unpredictable state, exact redirect URI, callback HMAC validation, and Shopify online-token response validation.
+- [x] Persist access token and expiry in a strong-consistency site-scoped Blobs store under an opaque random session key; set only a Secure, HttpOnly, SameSite=Lax cookie in the browser.
+- [x] Enforce the server allowlist and `email_verified === true`; empty allowlist, malformed shop, invalid state/HMAC, expired token, or unknown session fails closed.
+- [x] Add CSRF/origin checks for every mutation; define narrow fixed handlers, server-side payload validation, and safe error responses (no arbitrary Admin GraphQL proxy).
+- [x] Implement content/product/file operations using only scopes required by those exact operations; reject unapproved product references and non-image/oversized uploads.
+- [x] Run `npm run build` and `npm run lint`; expected: both exit 0. Inspect all rejection branches and confirm no credentials/session IDs are returned or logged.
+- [x] Commit and push this milestone.
 
 ### Task 4: Responsive content admin and public content rendering
 
