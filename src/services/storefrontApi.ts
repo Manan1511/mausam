@@ -5,6 +5,7 @@ import type {
   StorefrontCart,
   StorefrontStatus,
 } from '../types/shopify'
+import { validateHomepageContent } from './homepageContentValidation'
 
 export class StorefrontApiError extends Error {
   readonly status: number
@@ -96,8 +97,12 @@ export const storefrontApi: StorefrontApi = {
     return products
   },
   getHomepageContent: async () => {
-    const result = await request<{ content: HomepageContent | null }>('/api/storefront/homepage')
-    return result.content
+    const result = await request<{ content: unknown }>('/api/storefront/homepage')
+    try {
+      return validateHomepageContent(result.content)
+    } catch {
+      throw new StorefrontApiError('The storefront service returned invalid homepage content.', 502)
+    }
   },
   mutateCart: async (operation) => {
     const result = await request<{ cart: StorefrontCart }>('/api/storefront/cart', {

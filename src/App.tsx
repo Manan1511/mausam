@@ -14,8 +14,15 @@ import { CartProvider } from './context/CartProvider'
 import CartDrawer from './components/CartDrawer'
 import CheckoutModal from './components/CheckoutModal'
 import { type ProductCategory } from './data'
+import AdminApp from './admin/AdminApp'
+import { useStorefrontContent } from './context/StorefrontContentProvider'
 
 export default function App() {
+  const isAdminPath = typeof window !== 'undefined' && /^\/admin(?:\/|$)/.test(window.location.pathname)
+  return isAdminPath ? <AdminApp /> : <StorefrontApp />
+}
+
+function StorefrontApp() {
   const [hash, setHash] = useState(() =>
     typeof window !== 'undefined' ? window.location.hash.toLowerCase() : ''
   )
@@ -53,7 +60,24 @@ export default function App() {
 
   return (
     <CartProvider>
-      <div className="bg-cream text-ink min-h-screen flex flex-col justify-between">
+      <StorefrontPage isShop={isShop} shopCategory={shopCategory} navigateToHome={navigateToHome} />
+    </CartProvider>
+  )
+}
+
+function StorefrontPage({
+  isShop,
+  shopCategory,
+  navigateToHome,
+}: {
+  isShop: boolean
+  shopCategory: 'all' | ProductCategory
+  navigateToHome: () => void
+}) {
+  const { contentStatus } = useStorefrontContent()
+
+  return (
+    <div className="bg-cream text-ink min-h-screen flex flex-col justify-between">
         <div>
           <AnnouncementBar />
           <Header />
@@ -65,6 +89,16 @@ export default function App() {
             />
           ) : (
             <main>
+              {contentStatus === 'missing' && (
+                <p className="border-y border-border bg-beige px-6 py-4 text-center text-sm text-muted" role="status">
+                  Homepage content is being set up.
+                </p>
+              )}
+              {contentStatus === 'unavailable' && (
+                <p className="border-y border-border bg-beige px-6 py-4 text-center text-sm text-muted" role="alert">
+                  Homepage content is temporarily unavailable. Please try again later.
+                </p>
+              )}
               <Hero />
               <Reveal>
                 <ProductOfferings />
@@ -88,7 +122,6 @@ export default function App() {
         <Footer />
         <CartDrawer />
         <CheckoutModal />
-      </div>
-    </CartProvider>
+    </div>
   )
 }

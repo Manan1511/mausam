@@ -47,6 +47,113 @@
   }
 }
 
+.admin-root {
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+.admin-input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: 0.625rem;
+  background: #fff;
+  padding: 0.625rem 0.75rem;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.admin-input::placeholder {
+  color: #6f665d;
+  opacity: 1;
+}
+
+.admin-input:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  border-color: var(--color-ink);
+}
+
+.admin-primary-button,
+.admin-secondary-button,
+.admin-icon-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+  cursor: pointer;
+}
+
+.admin-primary-button {
+  border: 1px solid var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+
+.admin-primary-button:hover:not(:disabled) {
+  background: #40372f;
+  transform: translateY(-1px);
+}
+
+.admin-secondary-button,
+.admin-icon-button {
+  border: 1px solid var(--color-border);
+  background: #fff;
+  color: var(--color-ink);
+}
+
+.admin-secondary-button:hover:not(:disabled),
+.admin-icon-button:hover:not(:disabled) {
+  border-color: var(--color-gold);
+  background: var(--color-cream);
+}
+
+.admin-icon-button {
+  min-width: 44px;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.75rem;
+}
+
+.admin-primary-button:focus-visible,
+.admin-secondary-button:focus-visible,
+.admin-icon-button:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.admin-primary-button:disabled,
+.admin-secondary-button:disabled,
+.admin-icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.admin-savebar {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}
+
+.admin-media-picker-panel {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-primary-button,
+  .admin-secondary-button,
+  .admin-icon-button {
+    transition: none;
+  }
+}
+
 @layer components {
   .diagonal-swatch {
     background-image: repeating-linear-gradient(

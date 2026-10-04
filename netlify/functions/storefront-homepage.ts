@@ -40,6 +40,24 @@ function asText(value: string | null | undefined, maxLength = 1600): string {
   return (value ?? '').trim().slice(0, maxLength)
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function storedJsonObjects(value: string | null | undefined): Array<Record<string, unknown>> {
+  if (!value) return []
+  try {
+    const parsed: unknown = JSON.parse(value)
+    return Array.isArray(parsed) ? parsed.filter(isRecord) : []
+  } catch {
+    return []
+  }
+}
+
+function storedText(record: Record<string, unknown>, key: string, maxLength: number): string {
+  return typeof record[key] === 'string' ? record[key].trim().slice(0, maxLength) : ''
+}
+
 function safeHref(value: string | null | undefined): string {
   const href = asText(value, 500)
   if (href.startsWith('#')) return href
@@ -80,6 +98,14 @@ function normalizeHomepage(metaobject: NonNullable<ShopifyHomepageResponse['meta
     return field ? safeMedia(field) : null
   }
   const features = fields.get('featured_products')?.references.nodes ?? []
+  const giftingSteps = storedJsonObjects(fields.get('gifting_steps')?.value).slice(0, 3).map((item) => ({
+    title: storedText(item, 'title', 180),
+    description: storedText(item, 'description', 900),
+  }))
+  const craftsmanshipFeatures = storedJsonObjects(fields.get('craftsmanship_features')?.value).slice(0, 3).map((item) => ({
+    title: storedText(item, 'title', 180),
+    description: storedText(item, 'description', 900),
+  }))
 
   return {
     announcement: {
@@ -103,21 +129,29 @@ function normalizeHomepage(metaobject: NonNullable<ShopifyHomepageResponse['meta
       body: text('gifting_body'),
       ctaLabel: text('gifting_cta_label', 80),
       ctaHref: safeHref(text('gifting_cta_href', 500)),
+      secondaryCtaLabel: text('gifting_secondary_cta_label', 80),
+      secondaryCtaHref: safeHref(text('gifting_secondary_cta_href', 500)),
       image: media('gifting_image'),
+      steps: giftingSteps,
     },
     craftsmanship: {
       eyebrow: text('craftsmanship_eyebrow', 180),
       title: text('craftsmanship_title', 280),
       body: text('craftsmanship_body'),
       image: media('craftsmanship_image'),
+      features: craftsmanshipFeatures,
     },
     editorial: {
       eyebrow: text('editorial_eyebrow', 180),
       title: text('editorial_title', 280),
-      body: text('editorial_body'),
-      ctaLabel: text('editorial_cta_label', 80),
-      ctaHref: safeHref(text('editorial_cta_href', 500)),
-      image: media('editorial_image'),
+      moments: Array.from({ length: 4 }, (_, index) => {
+        const number = index + 1
+        return {
+          label: text(`editorial_moment_${number}_label`, 120),
+          tag: text(`editorial_moment_${number}_tag`, 100),
+          image: media(`editorial_moment_${number}_image`),
+        }
+      }),
     },
     featuredProductIds: features.map(({ id }) => id).slice(0, 20),
   }

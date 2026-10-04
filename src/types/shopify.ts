@@ -60,21 +60,22 @@ export interface HomepageContent {
     body: string
     ctaLabel: string
     ctaHref: string
+    secondaryCtaLabel: string
+    secondaryCtaHref: string
     image: StorefrontMedia | null
+    steps: Array<{ title: string; description: string }>
   }
   craftsmanship: {
     eyebrow: string
     title: string
     body: string
     image: StorefrontMedia | null
+    features: Array<{ title: string; description: string }>
   }
   editorial: {
     eyebrow: string
     title: string
-    body: string
-    ctaLabel: string
-    ctaHref: string
-    image: StorefrontMedia | null
+    moments: Array<{ label: string; tag: string; image: StorefrontMedia | null }>
   }
   featuredProductIds: string[]
 }

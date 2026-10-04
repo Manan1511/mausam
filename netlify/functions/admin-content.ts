@@ -85,6 +85,33 @@ function contentMedia(id: string | null): StorefrontMedia | null {
   return id ? { id, url: '', altText: null } : null
 }
 
+function parseCopyItems(value: unknown, label: string): Array<{ title: string; description: string }> {
+  if (!Array.isArray(value) || value.length !== 3) {
+    throw new HttpError(`${label} must contain exactly three items.`, 400)
+  }
+  return value.map((item, index) => {
+    if (!isRecord(item)) throw new HttpError(`Invalid ${label} item ${index + 1}.`, 400)
+    return {
+      title: textField(item, 'title', 180),
+      description: textField(item, 'description', 900),
+    }
+  })
+}
+
+function parseEditorialMoments(value: unknown): HomepageContent['editorial']['moments'] {
+  if (!Array.isArray(value) || value.length !== 4) {
+    throw new HttpError('Editorial must contain exactly four image tiles.', 400)
+  }
+  return value.map((item, index) => {
+    if (!isRecord(item)) throw new HttpError(`Invalid editorial tile ${index + 1}.`, 400)
+    return {
+      label: textField(item, 'label', 120),
+      tag: textField(item, 'tag', 100),
+      image: contentMedia(mediaId(item.image, `editorial tile ${index + 1}`)),
+    }
+  })
+}
+
 function parseContent(value: unknown): ContentInput {
   if (!isRecord(value)) throw new HttpError('Homepage content is required.', 400)
   const announcement = value.announcement
@@ -96,6 +123,9 @@ function parseContent(value: unknown): ContentInput {
     throw new HttpError('Homepage content has an invalid section.', 400)
   }
   if (typeof announcement.enabled !== 'boolean') throw new HttpError('Invalid announcement enabled value.', 400)
+  const giftingSteps = parseCopyItems(gifting.steps, 'Gifting steps')
+  const craftsmanshipFeatures = parseCopyItems(craftsmanship.features, 'Craftsmanship features')
+  const editorialMoments = parseEditorialMoments(editorial.moments)
 
   const featuredProductIds = value.featuredProductIds
   if (
@@ -130,21 +160,22 @@ function parseContent(value: unknown): ContentInput {
       body: readText(gifting, 'body', 1600),
       ctaLabel: readText(gifting, 'ctaLabel', 80),
       ctaHref: validateHref(readText(gifting, 'ctaHref', 500), 'gifting.ctaHref'),
+      secondaryCtaLabel: readText(gifting, 'secondaryCtaLabel', 80),
+      secondaryCtaHref: validateHref(readText(gifting, 'secondaryCtaHref', 500), 'gifting.secondaryCtaHref'),
       image: contentMedia(mediaId(gifting.image, 'gifting')),
+      steps: giftingSteps,
     },
     craftsmanship: {
       eyebrow: readText(craftsmanship, 'eyebrow', 180),
       title: readText(craftsmanship, 'title', 280),
       body: readText(craftsmanship, 'body', 1600),
       image: contentMedia(mediaId(craftsmanship.image, 'craftsmanship')),
+      features: craftsmanshipFeatures,
     },
     editorial: {
       eyebrow: readText(editorial, 'eyebrow', 180),
       title: readText(editorial, 'title', 280),
-      body: readText(editorial, 'body', 1600),
-      ctaLabel: readText(editorial, 'ctaLabel', 80),
-      ctaHref: validateHref(readText(editorial, 'ctaHref', 500), 'editorial.ctaHref'),
-      image: contentMedia(mediaId(editorial.image, 'editorial')),
+      moments: editorialMoments,
     },
     featuredProductIds: featuredProductIds as string[],
   }
@@ -166,12 +197,34 @@ function safeMedia(media: ShopifyMediaReference): StorefrontMedia | null {
   return null
 }
 
+function storedJsonObjects(value: string | null | undefined): Array<Record<string, unknown>> {
+  if (!value) return []
+  try {
+    const parsed: unknown = JSON.parse(value)
+    return Array.isArray(parsed) ? parsed.filter(isRecord) : []
+  } catch {
+    return []
+  }
+}
+
+function storedText(record: Record<string, unknown>, key: string, max: number): string {
+  return typeof record[key] === 'string' ? record[key].trim().slice(0, max) : ''
+}
+
 function normalizedContent(metaobject: NonNullable<ShopifyHomepageResponse['metaobjectByHandle']>): HomepageContent {
   const fields = new Map(metaobject.fields.map((field) => [field.key, field]))
   const text = (key: string, max = 1600) => (fields.get(key)?.value ?? '').trim().slice(0, max)
   const media = (key: string) => safeMedia(fields.get(key)?.reference ?? null)
   const href = (key: string) => validateStoredHref(text(key, 500))
   const products = fields.get('featured_products')?.references.nodes ?? []
+  const giftingSteps = storedJsonObjects(fields.get('gifting_steps')?.value).slice(0, 3).map((item) => ({
+    title: storedText(item, 'title', 180),
+    description: storedText(item, 'description', 900),
+  }))
+  const craftsmanshipFeatures = storedJsonObjects(fields.get('craftsmanship_features')?.value).slice(0, 3).map((item) => ({
+    title: storedText(item, 'title', 180),
+    description: storedText(item, 'description', 900),
+  }))
   return {
     announcement: {
       enabled: text('announcement_enabled', 5).toLowerCase() === 'true',
@@ -194,21 +247,29 @@ function normalizedContent(metaobject: NonNullable<ShopifyHomepageResponse['meta
       body: text('gifting_body'),
       ctaLabel: text('gifting_cta_label', 80),
       ctaHref: href('gifting_cta_href'),
+      secondaryCtaLabel: text('gifting_secondary_cta_label', 80),
+      secondaryCtaHref: href('gifting_secondary_cta_href'),
       image: media('gifting_image'),
+      steps: giftingSteps,
     },
     craftsmanship: {
       eyebrow: text('craftsmanship_eyebrow', 180),
       title: text('craftsmanship_title', 280),
       body: text('craftsmanship_body'),
       image: media('craftsmanship_image'),
+      features: craftsmanshipFeatures,
     },
     editorial: {
       eyebrow: text('editorial_eyebrow', 180),
       title: text('editorial_title', 280),
-      body: text('editorial_body'),
-      ctaLabel: text('editorial_cta_label', 80),
-      ctaHref: href('editorial_cta_href'),
-      image: media('editorial_image'),
+      moments: Array.from({ length: 4 }, (_, index) => {
+        const number = index + 1
+        return {
+          label: text(`editorial_moment_${number}_label`, 120),
+          tag: text(`editorial_moment_${number}_tag`, 100),
+          image: media(`editorial_moment_${number}_image`),
+        }
+      }),
     },
     featuredProductIds: products.map(({ id }) => id).slice(0, 20),
   }
@@ -242,14 +303,15 @@ function contentValues(content: ContentInput): Record<string, unknown> {
     gifting_body: content.gifting.body,
     gifting_cta_label: content.gifting.ctaLabel,
     gifting_cta_href: content.gifting.ctaHref,
+    gifting_secondary_cta_label: content.gifting.secondaryCtaLabel,
+    gifting_secondary_cta_href: content.gifting.secondaryCtaHref,
+    gifting_steps: JSON.stringify(content.gifting.steps),
     craftsmanship_eyebrow: content.craftsmanship.eyebrow,
     craftsmanship_title: content.craftsmanship.title,
     craftsmanship_body: content.craftsmanship.body,
+    craftsmanship_features: JSON.stringify(content.craftsmanship.features),
     editorial_eyebrow: content.editorial.eyebrow,
     editorial_title: content.editorial.title,
-    editorial_body: content.editorial.body,
-    editorial_cta_label: content.editorial.ctaLabel,
-    editorial_cta_href: content.editorial.ctaHref,
     featured_products: JSON.stringify(content.featuredProductIds),
   }
 
@@ -258,11 +320,18 @@ function contentValues(content: ContentInput): Record<string, unknown> {
     ['hero_mobile_image', content.hero.mobileImage],
     ['gifting_image', content.gifting.image],
     ['craftsmanship_image', content.craftsmanship.image],
-    ['editorial_image', content.editorial.image],
+    ...content.editorial.moments.flatMap((moment, index) => [
+      [`editorial_moment_${index + 1}_image`, moment.image] as [string, StorefrontMedia | null],
+    ]),
   ]
   for (const [key, image] of imageFields) {
     if (image) values[key] = image.id
   }
+  content.editorial.moments.forEach((moment, index) => {
+    const number = index + 1
+    values[`editorial_moment_${number}_label`] = moment.label
+    values[`editorial_moment_${number}_tag`] = moment.tag
+  })
   return values
 }
 
@@ -273,7 +342,7 @@ async function validateReferences(token: string, content: ContentInput): Promise
     content.hero.mobileImage?.id,
     content.gifting.image?.id,
     content.craftsmanship.image?.id,
-    content.editorial.image?.id,
+    ...content.editorial.moments.map((moment) => moment.image?.id),
   ].filter((id): id is string => Boolean(id))
   const ids = [...new Set([...productIds, ...mediaIds])]
   if (ids.length === 0) return
@@ -327,7 +396,13 @@ export default {
 
       const body = await readJsonBody(request, 32_768)
       const content = parseContent(body)
-      const selectedImages = [content.hero.image, content.hero.mobileImage, content.gifting.image, content.craftsmanship.image, content.editorial.image]
+      const selectedImages = [
+        content.hero.image,
+        content.hero.mobileImage,
+        content.gifting.image,
+        content.craftsmanship.image,
+        ...content.editorial.moments.map((moment) => moment.image),
+      ]
       if (content.featuredProductIds.length && !hasStaffScope(session, 'read_products')) {
         return jsonResponse({ error: 'Your Shopify staff account cannot select featured products.' }, 403)
       }

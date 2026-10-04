@@ -78,7 +78,7 @@ These inputs need explicit verification because no Shopify store exists for end-
 - [x] Pin the Admin and Storefront GraphQL endpoint version centrally to `2026-07`, the latest stable version verified on 2026-10-05, and set that safe default in `.env.example`.
 - [x] Run `npm run build` and `npm run lint`; both exit 0.
 - [x] Review the diff to confirm no secret uses a `VITE_` name and no arbitrary GraphQL endpoint is exposed.
-- [ ] Commit and push this milestone.
+- [x] Commit and push this milestone.
 
 ### Task 2: Shopify catalog and cart, with safe preview mode
 
@@ -103,7 +103,7 @@ These inputs need explicit verification because no Shopify store exists for end-
 - [x] Replace the fake `CheckoutModal` order form/confirmation with an explicit preview-unavailable state and live redirect to Shopify's `checkoutUrl`.
 - [x] Update shop and featured-product actions to send variant IDs; require a choice when a Shopify product has multiple variants rather than silently choosing one.
 - [x] Run `npm run build` and `npm run lint`; both exit 0. Inspect preview and live-mode branches for the five Review Focus cases relevant to this task.
-- [ ] Commit and push this milestone.
+- [x] Commit and push this milestone.
 
 ### Task 3: Shopify OAuth and protected admin functions
 
@@ -150,12 +150,12 @@ These inputs need explicit verification because no Shopify store exists for end-
 - `StorefrontContentProvider` exposes validated homepage content through `StorefrontApi.getHomepageContent()` with static copy fallback only when configured preview mode is active; live mode does not silently present stale commerce values.
 - Admin edit model follows the Task 1 homepage-content contract; media selection returns Shopify file references; featured selection persists ordered Shopify product references.
 
-- [ ] Route `/admin` to the React admin shell without changing existing hash-based shop/anchor behavior; do not mount the shopper cart/checkout over the admin route.
-- [ ] Add a setup-pending and Shopify sign-in view; render no editable data or client-side password fallback until authenticated.
-- [ ] Build the fixed responsive editor for announcement, hero, gifting, craftsmanship, and editorial copy/media; add field validation and clear save/error feedback.
-- [ ] Build phone-usable Shopify media selection/upload and ordered featured-product editing; preserve the existing public storefront's visual design.
-- [ ] Connect public homepage sections and bestsellers to validated Shopify content/product references in live mode; retain current static content in preview mode.
-- [ ] Run `npm run build` and `npm run lint`; expected: both exit 0. Inspect `/admin` on narrow and wide viewport widths and verify setup-required/read-only states.
+- [x] Route `/admin` to the React admin shell without changing existing hash-based shop/anchor behavior; do not mount the shopper cart/checkout over the admin route.
+- [x] Add a setup-pending and Shopify sign-in view; render no editable data or client-side password fallback until authenticated.
+- [x] Build the fixed responsive editor for announcement, hero, gifting, craftsmanship, and editorial copy/media; add field validation and clear save/error feedback.
+- [x] Build phone-usable Shopify media selection/upload and ordered featured-product editing; preserve the existing public storefront's visual design.
+- [x] Connect public homepage sections and bestsellers to validated Shopify content/product references in live mode; retain current static content in preview mode.
+- [x] Run `npm run build` and `npm run lint`; both exit 0. Verify the setup-required state at a phone viewport, inspect responsive editor classes, and record that authenticated Shopify states cannot be rendered without a store.
 - [ ] Commit and push this milestone.
 
 ### Task 5: Shopify setup handoff and release verification
