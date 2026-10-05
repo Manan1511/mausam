@@ -78,7 +78,7 @@ export default function FeaturedProductsEditor({ selectedIds, onChange }: Featur
           <h3 className="m-0 text-lg font-medium text-ink">Featured products</h3>
           <span className="text-sm text-muted">{selectedIds.length} of 20 selected</span>
         </div>
-        <p className="mb-0 mt-1 text-sm text-muted">Choose active Shopify products, then use the arrows to set their storefront order.</p>
+        <p className="mb-0 mt-1 text-sm text-muted">Choose active products published to this Shopify storefront, then use the arrows to set their order.</p>
       </div>
 
       <div className="space-y-3">

@@ -156,7 +156,7 @@ These inputs need explicit verification because no Shopify store exists for end-
 - [x] Build phone-usable Shopify media selection/upload and ordered featured-product editing; preserve the existing public storefront's visual design.
 - [x] Connect public homepage sections and bestsellers to validated Shopify content/product references in live mode; retain current static content in preview mode.
 - [x] Run `npm run build` and `npm run lint`; both exit 0. Verify the setup-required state at a phone viewport, inspect responsive editor classes, and record that authenticated Shopify states cannot be rendered without a store.
-- [ ] Commit and push this milestone.
+- [x] Commit and push this milestone.
 
 ### Task 5: Shopify setup handoff and release verification
 
@@ -165,10 +165,10 @@ These inputs need explicit verification because no Shopify store exists for end-
 - Modify: `.env.example`, `docs/superpowers/specs/2026-10-04-shopify-admin-design.md` if implementation decisions require a documented ruling
 - Review: `netlify.toml`, all Shopify function routes, `src/App.tsx`, and current storefront/cart components
 
-- [ ] Document creation/configuration of the Shopify app, exact redirect URLs, least-privilege Admin and Storefront scopes, homepage metaobject definition/access/seed, Shopify Files, Netlify variables, and allowlist setup; mark store credentials/email as pending rather than inventing values.
-- [ ] Document the explicit preview-to-live switch and rollback; include the fact that full OAuth, CMS writes, Shopify Files, and checkout remain unverified until a Shopify development store and credentials exist.
-- [ ] Run final `npm run build` and `npm run lint`; expected: both exit 0. Inspect final changed-file list and `git diff --check` output.
-- [ ] Commit and push the release documentation/cleanup milestone.
+- [x] Document creation/configuration of the Shopify app, exact redirect URLs, least-privilege Admin and Storefront scopes, homepage metaobject definition/access/seed, Shopify Files, Netlify variables, and allowlist setup; mark store credentials/email as pending rather than inventing values.
+- [x] Document the explicit preview-to-live switch and rollback; include the fact that full OAuth, CMS writes, Shopify Files, and checkout remain unverified until a Shopify development store and credentials exist.
+- [x] Run final `npm run build` and `npm run lint`; expected: both exit 0. Inspect final changed-file list and `git diff --check` output.
+- [x] Commit and push the release documentation/cleanup milestone.
 
 ---
 

@@ -1,7 +1,7 @@
 import { adminErrorResponse, readCursor } from './_shared/adminHttp.js'
 import { hasStaffScope, requireAdminSession } from './_shared/adminSession.js'
 import { jsonResponse, methodNotAllowed } from './_shared/http.js'
-import { shopifyAdminGraphql } from './_shared/shopifyGraphql.js'
+import { shopifyAdminGraphql, shopifyStorefrontVisibleProductIds } from './_shared/shopifyGraphql.js'
 
 const PAGE_SIZE = 50
 
@@ -39,8 +39,11 @@ export default {
     try {
       const cursor = readCursor(new URL(request.url).searchParams.get('after'))
       const result = await shopifyAdminGraphql<ProductsResponse>(session.token, PRODUCTS_QUERY, { after: cursor })
-      const products = result.products.nodes
+      const activeProducts = result.products.nodes
         .filter((product) => product.status === 'ACTIVE' && /^gid:\/\/shopify\/Product\/[A-Za-z0-9-]+$/.test(product.id))
+      const visibleIds = await shopifyStorefrontVisibleProductIds(activeProducts.map(({ id }) => id))
+      const products = activeProducts
+        .filter((product) => visibleIds.has(product.id))
         .map((product) => {
           let image: { url: string; altText: string | null } | null = null
           if (product.featuredImage) {

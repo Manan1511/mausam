@@ -118,6 +118,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [featuredProducts, setFeaturedProducts] = useState<StoreProduct[]>(
     storefrontBuildMode === 'preview' ? previewFeaturedProducts : [],
   )
+  const [missingFeaturedProductCount, setMissingFeaturedProductCount] = useState(0)
   const [homepageContent, setHomepageContent] = useState<HomepageContent | null>(null)
   const [homepageStatus, setHomepageStatus] = useState<CartContextType['homepageStatus']>('loading')
   const [items, setItems] = useState<CartItem[]>([])
@@ -142,6 +143,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           setMode('preview')
           setProducts(previewProducts)
           setFeaturedProducts(previewFeaturedProducts)
+          setMissingFeaturedProductCount(0)
           setHomepageContent(null)
           setHomepageStatus('ready')
           setItems(readPreviewCart())
@@ -170,12 +172,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setHomepageStatus(homepageResult.status === 'fulfilled' ? 'ready' : 'unavailable')
         if (content) {
           const byId = new Map(liveProducts.map((product) => [product.id, product]))
+          const missingCount = content.featuredProductIds.filter((id) => !byId.has(id)).length
+          setMissingFeaturedProductCount(missingCount)
           setFeaturedProducts(
             content.featuredProductIds.flatMap((id) => {
               const product = byId.get(id)
               return product ? [product] : []
             }),
           )
+        } else {
+          setMissingFeaturedProductCount(0)
         }
 
         const savedCartId = getStoredShopifyCartId()
@@ -196,6 +202,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           setMode('preview')
           setProducts(previewProducts)
           setFeaturedProducts(previewFeaturedProducts)
+          setMissingFeaturedProductCount(0)
           setHomepageContent(null)
           setHomepageStatus('ready')
           setItems(readPreviewCart())
@@ -204,6 +211,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           setMode('live')
           setProducts([])
           setFeaturedProducts([])
+          setMissingFeaturedProductCount(0)
           setHomepageStatus('unavailable')
           setCartError('The Shopify storefront is unavailable. Please try again shortly.')
           setStatus('unavailable')
@@ -364,6 +372,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     status,
     products,
     featuredProducts,
+    missingFeaturedProductCount,
     homepageContent,
     homepageStatus,
     items,
@@ -388,6 +397,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     status,
     products,
     featuredProducts,
+    missingFeaturedProductCount,
     homepageContent,
     homepageStatus,
     items,

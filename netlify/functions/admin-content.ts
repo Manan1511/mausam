@@ -2,7 +2,7 @@ import type { HomepageContent, StorefrontMedia } from '../../src/types/shopify.j
 import { adminErrorResponse, containsControlCharacters, isRecord } from './_shared/adminHttp.js'
 import { hasStaffScope, requireAdminSession, requireSameOrigin } from './_shared/adminSession.js'
 import { HttpError, jsonResponse, methodNotAllowed, readJsonBody } from './_shared/http.js'
-import { shopifyAdminGraphql } from './_shared/shopifyGraphql.js'
+import { shopifyAdminGraphql, shopifyStorefrontVisibleProductIds } from './_shared/shopifyGraphql.js'
 
 interface ShopifyHomepageResponse {
   metaobjectByHandle: {
@@ -364,6 +364,12 @@ async function validateReferences(token: string, content: ContentInput): Promise
 
   if (productIds.some((id) => found.get(id)?.__typename !== 'Product' || found.get(id)?.status !== 'ACTIVE')) {
     throw new HttpError('Choose active Shopify products for the featured list.', 400)
+  }
+  if (productIds.length > 0) {
+    const storefrontProductIds = await shopifyStorefrontVisibleProductIds(productIds)
+    if (productIds.some((id) => !storefrontProductIds.has(id))) {
+      throw new HttpError('Choose products published to the configured Shopify storefront.', 400)
+    }
   }
   if (mediaIds.some((id) => found.get(id)?.__typename !== 'MediaImage')) {
     throw new HttpError('One or more selected images are no longer available.', 400)

@@ -5,7 +5,7 @@ import { ProductVariantSelect } from './ProductVariantPicker'
 import { useProductVariant } from '../hooks/useProductVariant'
 
 export default function Bestsellers() {
-  const { featuredProducts, status, mode, homepageStatus } = useCart()
+  const { featuredProducts, missingFeaturedProductCount, status, mode, homepageStatus } = useCart()
 
   return (
     <div id="bestsellers" className="scroll-mt-28 bg-beige py-14 md:py-20">
@@ -30,6 +30,13 @@ export default function Bestsellers() {
         {status === 'ready' && mode === 'live' && homepageStatus === 'unavailable' && (
           <p className="py-8 text-sm text-muted" role="alert">
             Featured creations could not be loaded from Shopify.
+          </p>
+        )}
+        {status === 'ready' && mode === 'live' && missingFeaturedProductCount > 0 && (
+          <p className="py-8 text-sm text-muted" role="alert">
+            {missingFeaturedProductCount === 1
+              ? 'One featured product is not published to this Shopify storefront. Check the product publication and homepage selection.'
+              : `${missingFeaturedProductCount} featured products are not published to this Shopify storefront. Check product publication and homepage selection.`}
           </p>
         )}
         {status === 'ready' && featuredProducts.length === 0 && homepageStatus === 'ready' && (

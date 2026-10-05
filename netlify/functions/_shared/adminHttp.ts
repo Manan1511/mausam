@@ -7,6 +7,9 @@ export function adminErrorResponse(error: unknown): Response {
   }
 
   if (error instanceof ShopifyApiError) {
+    if (error.code === 'NOT_CONFIGURED') {
+      return jsonResponse({ error: 'The private Shopify Storefront token is not configured. Add it before managing featured products.' }, 503)
+    }
     if (error.status === 401) {
       return jsonResponse({ error: 'Your Shopify session has expired. Sign in again.' }, 401)
     }

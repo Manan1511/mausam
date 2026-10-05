@@ -11,7 +11,7 @@ The custom admin is not a second product/order system. Shopify Admin remains the
 
 ## Decisions and boundaries
 
-- **Admin scope:** fixed editor for the announcement bar, hero, gifting, craftsmanship, and editorial content/media, plus ordered featured-product selection. No generic page builder, arbitrary section reordering, or custom product/order management.
+- **Admin scope:** fixed editor for the announcement bar, hero, gifting, craftsmanship, and editorial content/media, plus ordered featured-product selection. Featured products must be active and visible through the configured Headless storefront. No generic page builder, arbitrary section reordering, or custom product/order management.
 - **Content source:** Shopify metaobjects/metafields. The public storefront reads published content through Shopify's Storefront API; the admin saves it through server-side Shopify Admin GraphQL.
 - **Admin authentication:** Shopify's standalone authorization-code flow, requesting per-user/online access. The server checks Shopify's verified staff email against a server-side allowlist. An empty or missing allowlist denies access.
 - **Checkout:** Shopify-hosted checkout. Storefront carts use Shopify's Storefront Cart API and its returned `checkoutUrl`; the site does not implement its own payment/order creation.

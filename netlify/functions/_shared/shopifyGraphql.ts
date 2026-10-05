@@ -141,7 +141,7 @@ export async function shopifyStorefrontGraphql<T>(
   buyerIp?: string,
 ): Promise<T> {
   const config = getShopifyRuntimeConfig()
-  if (config.mode !== 'live' || !config.shopDomain || !config.storefrontPrivateToken) {
+  if (!config.shopDomain || !config.storefrontPrivateToken) {
     throw new ShopifyApiError('Shopify Storefront API is not configured.', 'NOT_CONFIGURED')
   }
 
@@ -154,4 +154,16 @@ export async function shopifyStorefrontGraphql<T>(
     variables,
     buyerIp,
   )
+}
+
+export async function shopifyStorefrontVisibleProductIds(ids: string[]): Promise<Set<string>> {
+  if (ids.length === 0) return new Set()
+  const definitions = ids.map((_, index) => `$id${index}: ID!`).join(', ')
+  const products = ids.map((_, index) => `product${index}: product(id: $id${index}) { id }`).join('\n')
+  const variables = Object.fromEntries(ids.map((id, index) => [`id${index}`, id]))
+  const result = await shopifyStorefrontGraphql<Record<string, { id: string } | null>>(
+    `query StorefrontProductVisibility(${definitions}) { ${products} }`,
+    variables,
+  )
+  return new Set(Object.values(result).flatMap((product) => product?.id ? [product.id] : []))
 }

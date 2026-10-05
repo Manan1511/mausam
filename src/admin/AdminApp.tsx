@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { HomepageContent } from '../types/shopify'
 import AdminContentEditor from './AdminContentEditor'
 import { AdminApiError, adminApi } from './adminApi'
@@ -27,12 +27,14 @@ function StatePanel({
   body,
   action,
   actionLabel,
+  actionDisabled = false,
   notice,
 }: {
   title: string
   body: string
   action?: () => void
   actionLabel?: string
+  actionDisabled?: boolean
   notice?: string
 }) {
   return (
@@ -42,7 +44,7 @@ function StatePanel({
         <h1 className="m-0 text-2xl font-medium text-ink sm:text-3xl">{title}</h1>
         <p className="mb-0 mt-3 text-sm leading-6 text-muted">{body}</p>
         {notice && <p className="mt-5 rounded-lg border border-border bg-beige px-3 py-2 text-sm text-ink" role="status">{notice}</p>}
-        {action && actionLabel && <button type="button" onClick={action} className="admin-primary-button mt-6">{actionLabel}</button>}
+        {action && actionLabel && <button type="button" onClick={action} disabled={actionDisabled} className="admin-primary-button mt-6">{actionLabel}</button>}
       </section>
     </main>
   )
@@ -59,6 +61,7 @@ export default function AdminApp() {
   const [signingIn, setSigningIn] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
   const [baseline, setBaseline] = useState<string | null>(null)
+  const contentRevision = useRef(0)
 
   const loadAdmin = useCallback(async (isActive: () => boolean = () => true) => {
     try {
@@ -127,14 +130,16 @@ export default function AdminApp() {
 
   async function save() {
     if (!content || saveState === 'saving') return
+    const revisionAtSubmit = contentRevision.current
+    const submittedContent = cloneHomepageContent(content)
     setSaveState('saving')
     setActionError(null)
     try {
-      const saved = await adminApi.saveContent(content)
+      const saved = await adminApi.saveContent(submittedContent)
       setBaseline(JSON.stringify(saved))
-      setContent(saved)
+      if (contentRevision.current === revisionAtSubmit) setContent(saved)
       setContentExists(true)
-      setSaveState('saved')
+      setSaveState(contentRevision.current === revisionAtSubmit ? 'saved' : 'idle')
     } catch (cause) {
       setSaveState('error')
       setActionError(cause instanceof AdminApiError ? cause.message : 'Homepage content could not be saved.')
@@ -197,6 +202,7 @@ export default function AdminApp() {
           body="Continue with Shopify staff sign-in. Only accounts whose verified email is on the server-side allowlist can edit this content."
           notice={actionError ?? (authError ? 'Shopify could not complete sign-in. Check your access and try again.' : undefined)}
           action={() => void signIn()}
+          actionDisabled={signingIn}
           actionLabel={signingIn ? 'Connecting to Shopify…' : 'Continue with Shopify'}
         />
       )}
@@ -233,6 +239,7 @@ export default function AdminApp() {
             <AdminContentEditor
               value={content}
               onChange={(next) => {
+                contentRevision.current += 1
                 setContent(next)
                 if (saveState === 'saved' || saveState === 'error') setSaveState('idle')
                 setActionError(null)

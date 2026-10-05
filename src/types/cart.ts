@@ -22,6 +22,7 @@ export interface CartContextType {
   status: 'loading' | 'ready' | 'unavailable'
   products: StoreProduct[]
   featuredProducts: StoreProduct[]
+  missingFeaturedProductCount: number
   homepageContent: HomepageContent | null
   homepageStatus: 'loading' | 'ready' | 'unavailable'
   items: CartItem[]

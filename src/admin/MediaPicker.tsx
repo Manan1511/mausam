@@ -157,6 +157,9 @@ export default function MediaPicker({ label, value, onChange }: MediaPickerProps
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6">
               {error && <p className="mb-4 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-900" role="alert">{error}</p>}
               {notice && <p className="mb-4 rounded-lg border border-border bg-beige px-3 py-2 text-sm text-ink" role="status">{notice}</p>}
+              <button type="button" disabled={loading || uploading} onClick={() => void loadFiles(true)} className="admin-secondary-button mb-4 min-h-11">
+                {loading ? 'Refreshing images…' : 'Refresh images'}
+              </button>
               {loading && <p className="py-4 text-sm text-muted" role="status">Loading Shopify Files…</p>}
               {!loading && files.length === 0 && !error && <p className="py-8 text-center text-sm text-muted">No ready images yet. Upload the first one above.</p>}
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
